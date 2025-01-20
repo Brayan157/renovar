@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:4000/renovar
+    username: app_renovar
+    password: app_renovar
+  jpa:
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  jackson:
+    default-property-inclusion: non_null
+  application:
+    name: renovar
+
+api:
+  security:
+    token:
+      secret  : ${JWT_SECRET:my-secret-key}
