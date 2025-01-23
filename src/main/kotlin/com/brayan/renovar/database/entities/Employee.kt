@@ -11,6 +11,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
@@ -54,7 +55,7 @@ data class Employee(
     @JoinColumn(name = "funcao_id")
     @JsonManagedReference
     val function: Function,
-    @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL])
     val employeesWorks: List<EmployeeWork> = mutableListOf(),
     @Column(name = "registro_geral")
     val generalRegistration: String,
@@ -65,9 +66,7 @@ data class Employee(
     val employeeStatus: EmployeeStatus,
     @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL], orphanRemoval = true)
     val employeeEpis: List<EmployeeEPI> = mutableListOf(),
-    @OneToMany(mappedBy = "responsible", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @JsonManagedReference
-    val tools: List<ToolsWork> = mutableListOf()
+
 ){
     fun toEmployeeModel() = EmployeeModel(
         id = id,
@@ -85,11 +84,11 @@ data class Employee(
         employeeStatus = employeeStatus,
         registration = registration,
         employeeEpis = employeeEpis.map { it.toEmployeeEPIModel() },
-        tools = tools.map { it.toToolsWorkModel() }
+
     )
 
     companion object{
-        fun of (employeeModel: EmployeeModel, works:Map<UUID, Work>, epi:Map<UUID, EPI>, tools:List<ToolsWork>): Employee{
+        fun of (employeeModel: EmployeeModel, works:Map<UUID, Work>, epi:Map<UUID, EPI>): Employee{
             val employee = Employee(
                 id = employeeModel.id,
                 registration = employeeModel.registration,
@@ -126,25 +125,9 @@ data class Employee(
                     reason = employeeEPIModel.reason
                 )
             }
-            val employeesWorksTools = tools.map { toolsWork ->
-                val work = works[toolsWork.tool.id] ?: throw ChangeSetPersister.NotFoundException()
-                ToolsWork(
-                    id = ToolsWorkId(
-                        toolsId = toolsWork.tool.id!!,
-                        workId = work.id!!
-                    ),
-                    tool = toolsWork.tool,
-                    work = work,
-                    reason = toolsWork.reason,
-                    entryDate = toolsWork.entryDate,
-                    exitDate = toolsWork.exitDate,
-                    responsible = employee,
-                    creationDate = toolsWork.creationDate,
-                    updateDate = toolsWork.updateDate
-                )
-            }
 
-            return employee.copy(employeesWorks = employeesWorks, employeeEpis = employeeEpis, tools = employeesWorksTools)
+
+            return employee.copy(employeesWorks = employeesWorks, employeeEpis = employeeEpis)
         }
     }
 }

@@ -20,14 +20,14 @@ data class ToolsWork(
     @EmbeddedId
     private val id: ToolsWorkId = ToolsWorkId(),
 
-    @ManyToMany
+    @ManyToOne
     @MapsId("toolsId")
-    @JoinColumn(name = "tools_id")
+    @JoinColumn(name = "ferramenta_id")
     val tool: Tool,
 
-    @ManyToMany
+    @ManyToOne
     @MapsId("workId")
-    @JoinColumn(name = "work_id")
+    @JoinColumn(name = "obra_id")
     val work: Work,
 
     @Column(name = "motivo")
@@ -36,10 +36,6 @@ data class ToolsWork(
     val entryDate:String,
     @Column(name = "data_saida")
     val exitDate:String,
-    @ManyToOne
-    @JoinColumn(name = "funcionario_id")
-    @JsonManagedReference
-    val responsible:Employee? = null,
     @Column(name = "creation_date")
     @CreationTimestamp
     val creationDate:LocalDateTime? = null,
@@ -53,7 +49,6 @@ data class ToolsWork(
         reason = reason,
         entryDate = entryDate,
         exitDate = exitDate,
-        responsible = responsible?.toEmployeeModel(),
         creationDate = creationDate,
         updateDate = updateDate
     )

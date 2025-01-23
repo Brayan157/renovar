@@ -10,7 +10,6 @@ data class ToolsWorkModel(
     val reason: String,
     val entryDate:String,
     val exitDate:String,
-    val responsible: EmployeeModel? = null,
     val creationDate:LocalDateTime? = null,
     val updateDate: LocalDateTime? = null
 )

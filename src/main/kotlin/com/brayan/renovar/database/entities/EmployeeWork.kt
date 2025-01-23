@@ -6,6 +6,7 @@ import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
 import jakarta.persistence.Table
 import java.time.LocalDate
@@ -17,13 +18,13 @@ data class EmployeeWork(
     @EmbeddedId
     private val id: EmployeeWorkKey = EmployeeWorkKey(),
 
-    @ManyToMany
-    @MapsId("funcionarioId")
+    @ManyToOne
+    @MapsId("employeeId")
     @JoinColumn(name = "funcionario_id")
     val employee: Employee,
 
-    @ManyToMany
-    @MapsId("obraId")
+    @ManyToOne
+    @MapsId("workId")
     @JoinColumn(name = "obra_id")
     val work: Work,
     @Column(name = "data_inicio")

@@ -6,6 +6,7 @@ import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
 import jakarta.persistence.Table
 
@@ -15,12 +16,12 @@ data class EmployeeEPI(
     @EmbeddedId
     private val id: EmployeeEPIId = EmployeeEPIId(),
 
-    @ManyToMany
-    @MapsId("funcionarioId")
+    @ManyToOne
+    @MapsId("employeeId")
     @JoinColumn(name = "funcionario_id")
     val employee: Employee,
 
-    @ManyToMany
+    @ManyToOne
     @MapsId("epiId")
     @JoinColumn(name = "epi_id")
     val epi: EPI,

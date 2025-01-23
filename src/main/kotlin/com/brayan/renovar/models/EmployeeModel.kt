@@ -21,5 +21,4 @@ data class EmployeeModel(
     val hourlyRate: Double,
     val employeeStatus: EmployeeStatus,
     val employeeEpis: List<EmployeeEPIModel> = mutableListOf(),
-    val tools: List<ToolsWorkModel> = mutableListOf()
 )
