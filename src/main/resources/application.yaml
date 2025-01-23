@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:4000/renovar
+    url: jdbc:postgresql://localhost:5432/renovar?ssl=false
     username: app_renovar
     password: app_renovar
   jpa:
