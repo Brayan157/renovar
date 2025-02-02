@@ -7,6 +7,6 @@ data class FunctionModel(
     val id: UUID? = null,
     val function: String,
     val description: String,
-    val creationDate: LocalDateTime?,
-    val updateDate: LocalDateTime?
+    val creationDate: LocalDateTime? = null,
+    val updateDate: LocalDateTime? =  null
 )

@@ -32,7 +32,7 @@ data class Employee(
     @GenericGenerator(name = "uuid-hibernate-generator", strategy = "org.hibernate.id.UUIDGenerator")
     val id: UUID? = null,
     @Column(name = "matricula")
-    val registration: String,
+    val registration: String? = null,
     @Column(name = "nome")
     val name: String,
     @Column
@@ -66,6 +66,8 @@ data class Employee(
     val employeeStatus: EmployeeStatus,
     @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL], orphanRemoval = true)
     val employeeEpis: List<EmployeeEPI> = mutableListOf(),
+    @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL])
+    val toolsEmployee: List<ToolsEmployees> = mutableListOf()
 
 ){
     fun toEmployeeModel() = EmployeeModel(
@@ -82,13 +84,13 @@ data class Employee(
         generalRegistration = generalRegistration,
         hourlyRate = hourlyRate,
         employeeStatus = employeeStatus,
-        registration = registration,
+        registration = registration!!,
         employeeEpis = employeeEpis.map { it.toEmployeeEPIModel() },
-
+        toolsEmployee = toolsEmployee.map { it.toToolsEmployeesModel() }
     )
 
-    companion object{
-        fun of (employeeModel: EmployeeModel, works:Map<UUID, Work>, epi:Map<UUID, EPI>): Employee{
+companion object{
+        fun of (employeeModel: EmployeeModel, works:List<Work>, epi:List<EPI>, tools: List<Tool>): Employee{
             val employee = Employee(
                 id = employeeModel.id,
                 registration = employeeModel.registration,
@@ -104,30 +106,54 @@ data class Employee(
                 hourlyRate = employeeModel.hourlyRate,
                 employeeStatus = employeeModel.employeeStatus,
             )
-            val employeesWorks = employeeModel.employeesWorks.map { employeeWorkModel ->
-                val work = works[employeeWorkModel.workId] ?: throw ChangeSetPersister.NotFoundException()
-                EmployeeWork(
-                    id = EmployeeWorkKey(employee.id, work.id),
-                    employee = employee,
-                    work = work,
-                    startDate = employeeWorkModel.startDate,
-                    endDate = employeeWorkModel.endDate
-                )
-            }
-            val employeeEpis = employeeModel.employeeEpis.map { employeeEPIModel ->
-                val epi = epi[employeeEPIModel.epiId] ?: throw ChangeSetPersister.NotFoundException()
-                EmployeeEPI(
-                    id = EmployeeEPIId(employee.id, epi.id),
-                    employee = employee,
-                    epi = epi,
-                    quantity = employeeEPIModel.quantity,
-                    deliveryDate = employeeEPIModel.deliveryDate,
-                    reason = employeeEPIModel.reason
-                )
-            }
+            val employeesWorks = if (works.isNotEmpty() && employeeModel.employeesWorks.isNotEmpty()) {
+                employeeModel.employeesWorks.mapNotNull { employeeWorkModel ->
+                    val work = works.find { it.id == employeeWorkModel.workId }
+                    work?.let {
+                        EmployeeWork(
+                            id = EmployeeWorkKey(employee.id, work.id),
+                            employee = employee,
+                            work = work,
+                            startDate = employeeWorkModel.startDate,
+                            endDate = employeeWorkModel.endDate
+                        )
+                    }
+                }
+            } else emptyList()
 
+            val employeeEpis = if (epi.isNotEmpty() && employeeModel.employeeEpis.isNotEmpty()) {
+                employeeModel.employeeEpis.mapNotNull { employeeEPIModel ->
+                    val foundEpi = epi.find { it.id == employeeEPIModel.epiId }
+                    foundEpi?.let {
+                        EmployeeEPI(
+                            id = EmployeeEPIId(employee.id, foundEpi.id),
+                            employee = employee,
+                            epi = foundEpi,
+                            quantity = employeeEPIModel.quantity,
+                            deliveryDate = employeeEPIModel.deliveryDate,
+                            reason = employeeEPIModel.reason
+                        )
+                    }
+                }
+            } else emptyList()
 
-            return employee.copy(employeesWorks = employeesWorks, employeeEpis = employeeEpis)
+            val employeeTools = if (tools.isNotEmpty() && employeeModel.toolsEmployee.isNotEmpty()) {
+                employeeModel.toolsEmployee.mapNotNull { employeeTools ->
+                    val foundTool = tools.find { it.id == employeeTools.toolId }
+                    foundTool?.let {
+                        ToolsEmployees(
+                            id = ToolsEmployeesKey(employee.id, foundTool.id),
+                            employee = employee,
+                            tool = foundTool,
+                            startDate = employeeTools.startDate,
+                            endDate = employeeTools.endDate,
+                            quantity = employeeTools.quantity
+                        )
+                    }
+                }
+            } else emptyList()
+
+            return employee.copy(employeesWorks = employeesWorks, employeeEpis = employeeEpis, toolsEmployee = employeeTools)
         }
     }
 }

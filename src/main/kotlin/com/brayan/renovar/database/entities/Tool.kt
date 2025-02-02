@@ -10,6 +10,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.GenericGenerator
+import org.springframework.data.crossstore.ChangeSetPersister
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -36,7 +37,9 @@ data class Tool(
     @Column(name = "update_date")
     val updateDate: LocalDateTime? = null,
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val toolsWorks: List<ToolsWork> = mutableListOf()
+    val toolsWorks: List<ToolsWork> = mutableListOf(),
+    @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val toolsEmployees: List<ToolsEmployees> = mutableListOf()
 ){
     fun toToolModel() = ToolModel(
         id = id,
@@ -46,11 +49,12 @@ data class Tool(
         unitValue = unitValue,
         creationDate = creationDate,
         updateDate = updateDate,
-        toolsWorks = toolsWorks.map { it.toToolsWorkModel() }
+        toolsWorks = toolsWorks.map { it.toToolsWorkModel() },
+        toolsEmployees = toolsEmployees.map { it.toToolsEmployeesModel() }
     )
 
     companion object{
-        fun of(toolModel: ToolModel, work: Map<UUID, Work>): Tool{
+        fun of(toolModel: ToolModel, work: List<Work>, employees: List<Employee>): Tool{
             val tool = Tool(
                 id = toolModel.id,
                 name = toolModel.name,
@@ -61,7 +65,7 @@ data class Tool(
                 updateDate = toolModel.updateDate
             )
             val works = toolModel.toolsWorks.map { toolsWorkModel ->
-                val work = work[toolsWorkModel.workId] ?: throw Exception("Work not found")
+                val work = work.find { it.id == toolsWorkModel.workId } ?: throw ChangeSetPersister.NotFoundException()
                 ToolsWork(
                     id = ToolsWorkId(
                         toolsId = tool.id!!,
@@ -76,7 +80,22 @@ data class Tool(
                     updateDate = toolsWorkModel.updateDate
                 )
             }
-            return tool.copy(toolsWorks = works)
+            val employeeTools = toolModel.toolsEmployees.map { toolsEmployeesModel ->
+                val employee = employees.find { it.id == toolsEmployeesModel.employeeId } ?: throw ChangeSetPersister.NotFoundException()
+                ToolsEmployees(
+                    id = ToolsEmployeesKey(
+                        toolId = tool.id!!,
+                        employeeId = employee.id!!
+                    ),
+                    tool = tool,
+                    employee = employee,
+                    startDate = toolsEmployeesModel.startDate,
+                    endDate = toolsEmployeesModel.endDate,
+                    quantity = toolsEmployeesModel.quantity,
+                    creationDate = toolsEmployeesModel.creationDate,
+                )
+            }
+            return tool.copy(toolsWorks = works, toolsEmployees = employeeTools)
         }
     }
 }

@@ -6,5 +6,6 @@ CREATE TABLE epis_funcionario(
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
     update_date TIMESTAMP WITH TIME ZONE NOT NULL,
     FOREIGN KEY (id_funcionario) REFERENCES tb_funcionario(id),
-    FOREIGN KEY (id_epi) REFERENCES tb_epi(id)
+    FOREIGN KEY (id_epi) REFERENCES tb_epi(id),
+    PRIMARY KEY (id_funcionario, id_epi)
 );

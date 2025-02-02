@@ -61,7 +61,7 @@ data class EPI(
         employeeEpis = employeeEpis.map { it.toEmployeeEPIModel() }
     )
     companion object {
-        fun of (epiModel:EPIModel, employees:Map<UUID, Employee>):EPI {
+        fun of (epiModel:EPIModel, employees:List<Employee>):EPI {
             val epi = EPI(
                 id = epiModel.id,
                 name = epiModel.name,
@@ -76,7 +76,7 @@ data class EPI(
                 updateDate = epiModel.updateDate
             )
             val employeeEpis = epiModel.employeeEpis.map { employeeEPIModel ->
-                val employee = employees[employeeEPIModel.employeeId] ?: throw ChangeSetPersister.NotFoundException()
+                val employee = employees.find { it.id == employeeEPIModel.employeeId } ?: throw ChangeSetPersister.NotFoundException()
                 EmployeeEPI(
                     id = EmployeeEPIId(employee.id, epi.id),
                     employee = employee,

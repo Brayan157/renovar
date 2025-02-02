@@ -7,7 +7,7 @@ import java.util.UUID
 
 data class EmployeeModel(
     val id: UUID? = null,
-    val registration: String,
+    val registration: String? = null,
     val name: String,
     val cpf: String,
     val birthDate: LocalDate,
@@ -21,4 +21,5 @@ data class EmployeeModel(
     val hourlyRate: Double,
     val employeeStatus: EmployeeStatus,
     val employeeEpis: List<EmployeeEPIModel> = mutableListOf(),
+    val toolsEmployee: List<ToolsEmployeesModel> = mutableListOf()
 )

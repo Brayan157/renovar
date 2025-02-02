@@ -12,5 +12,6 @@ data class ToolModel(
     val creationDate: LocalDateTime? = null,
     val updateDate: LocalDateTime? = null,
     val toolStatus: ToolStatus,
-    val toolsWorks: List<ToolsWorkModel> = mutableListOf()
+    val toolsWorks: List<ToolsWorkModel> = mutableListOf(),
+    val toolsEmployees: List<ToolsEmployeesModel> = mutableListOf()
 )

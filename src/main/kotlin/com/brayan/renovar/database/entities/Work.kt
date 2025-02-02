@@ -61,7 +61,7 @@ data class Work(
         toolsWorks = toolsWorks.map { it.toToolsWorkModel() }
     )
     companion object{
-        fun of(workModel: WorkModel, employees: Map<UUID, Employee>, tools: Map<UUID, Tool>): Work{
+        fun of(workModel: WorkModel, employees: List<Employee>, tools: List<Tool>): Work{
             val work = Work(
                 id = workModel.id,
                 companyProviding = workModel.companyProviding,
@@ -71,32 +71,37 @@ data class Work(
                 updateDate = workModel.updateDate,
                 address = Address.of(workModel.address),
             )
-            val employeesWorks = workModel.employeesWorks.map { employeesWork ->
-                val employee = employees[employeesWork.employeeId] ?: throw ChangeSetPersister.NotFoundException()
-                EmployeeWork(
-                    id = EmployeeWorkKey(work.id, employee.id),
-                    employee = employee,
-                    work = work,
-                    startDate = employeesWork.startDate,
-                    endDate = employeesWork.endDate
-                )
-            }
-            val toolsWorks = workModel.toolsWorks.map { toolsWorkModel ->
-                val tool = tools[toolsWorkModel.toolsId] ?: throw ChangeSetPersister.NotFoundException()
-                ToolsWork(
-                    id = ToolsWorkId(
-                        toolsId = tool.id!!,
-                        workId = work.id!!
-                    ),
-                    tool = tool,
-                    work = work,
-                    reason = toolsWorkModel.reason,
-                    entryDate = toolsWorkModel.entryDate,
-                    exitDate = toolsWorkModel.exitDate,
-                    creationDate = toolsWorkModel.creationDate,
-                    updateDate = toolsWorkModel.updateDate
-                )
-            }
+            val employeesWorks = if (employees.isNotEmpty() && workModel.employeesWorks.isNotEmpty()) {
+                workModel.employeesWorks.mapNotNull { employeeWorkModel ->
+                    val employee = employees.find { it.id == employeeWorkModel.employeeId }
+                    employee?.let {
+                        EmployeeWork(
+                            id = EmployeeWorkKey(employee.id, work.id),
+                            employee = employee,
+                            work = work,
+                            startDate = employeeWorkModel.startDate,
+                            endDate = employeeWorkModel.endDate
+                        )
+                    }
+                }
+            } else emptyList()
+            val toolsWorks = if (tools.isNotEmpty() && workModel.toolsWorks.isNotEmpty()) {
+                workModel.toolsWorks.mapNotNull { toolsWorkModel ->
+                    val tool = tools.find { it.id == toolsWorkModel.toolsId }
+                    tool?.let {
+                        ToolsWork(
+                            id = ToolsWorkId(tool.id, work.id),
+                            tool = tool,
+                            work = work,
+                            reason = toolsWorkModel.reason,
+                            entryDate = toolsWorkModel.entryDate,
+                            exitDate = toolsWorkModel.exitDate,
+                            creationDate = toolsWorkModel.creationDate,
+                            updateDate = toolsWorkModel.updateDate
+                        )
+                    }
+                }
+            } else emptyList()
 
             return work.copy(employeesWorks = employeesWorks, toolsWorks = toolsWorks)
         }
