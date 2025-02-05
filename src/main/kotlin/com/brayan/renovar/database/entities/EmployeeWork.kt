@@ -30,9 +30,9 @@ data class EmployeeWork(
     @JoinColumn(name = "obra_id")
     val work: Work,
     @Column(name = "data_inicio")
-    val startDate: LocalDateTime? = null,
+    val startDate: LocalDate? = null,
     @Column(name = "data_fim")
-    val endDate: LocalDateTime? = null,
+    val endDate: LocalDate? = null,
     @Column(name = "creation_date")
     @CreationTimestamp
     val creationDate: LocalDateTime? = null,

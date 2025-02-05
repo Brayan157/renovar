@@ -11,14 +11,12 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToMany
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.UpdateTimestamp
-import org.springframework.data.crossstore.ChangeSetPersister
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -44,7 +42,7 @@ data class Employee(
     val creationDate: LocalDateTime? = null,
     @Column(name = "update_date")
     @UpdateTimestamp
-    val updateData: LocalDateTime? = null,
+    val updateDate: LocalDateTime? = null,
     @Column(name = "telefone")
     val phones: String,
     @OneToOne
@@ -76,7 +74,7 @@ data class Employee(
         cpf = cpf,
         birthDate = birthDate,
         creationDate = creationDate,
-        updateDate = updateData,
+        updateDate = updateDate,
         phones = phones,
         addressModel = address.toAddressModel(),
         functionModel = function.toFunctionModel(),
@@ -98,7 +96,7 @@ companion object{
                 cpf = employeeModel.cpf,
                 birthDate = employeeModel.birthDate,
                 creationDate = employeeModel.creationDate,
-                updateData = employeeModel.updateDate,
+                updateDate = employeeModel.updateDate,
                 phones = employeeModel.phones,
                 address = Address.of(employeeModel.addressModel),
                 function = Function.of(employeeModel.functionModel),
@@ -131,7 +129,11 @@ companion object{
                             epi = foundEpi,
                             quantity = employeeEPIModel.quantity,
                             deliveryDate = employeeEPIModel.deliveryDate,
-                            reason = employeeEPIModel.reason
+                            reason = employeeEPIModel.reason,
+                            epiStatus = employeeEPIModel.epiStatus,
+                            returnDate = employeeEPIModel.returnDate,
+                            creationDate = employeeEPIModel.creationDate,
+                            updateDate = employeeEPIModel.updateDate
                         )
                     }
                 }
@@ -147,7 +149,11 @@ companion object{
                             tool = foundTool,
                             startDate = employeeTools.startDate,
                             endDate = employeeTools.endDate,
-                            quantity = employeeTools.quantity
+                            quantity = employeeTools.quantity,
+                            status = employeeTools.status,
+                            creationDate = employeeTools.creationDate,
+                            updateDate = employeeTools.updateDate
+
                         )
                     }
                 }

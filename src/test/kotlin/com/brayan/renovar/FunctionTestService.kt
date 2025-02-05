@@ -3,7 +3,10 @@ package com.brayan.renovar
 import com.brayan.renovar.api.request.FunctionRequest
 import com.brayan.renovar.database.entities.Function
 import com.brayan.renovar.database.repositories.implementations.EmployeeRepositoryImpl
+import com.brayan.renovar.database.repositories.interfaces.EPIRepository
 import com.brayan.renovar.database.repositories.interfaces.EmployeeRepository
+import com.brayan.renovar.database.repositories.interfaces.ToolRepository
+import com.brayan.renovar.database.repositories.interfaces.WorkRepository
 import com.brayan.renovar.models.FunctionModel
 import com.brayan.renovar.services.implementations.EmployeeServiceImpl
 import com.brayan.renovar.services.interfaces.EmployeeService
@@ -20,9 +23,11 @@ import kotlin.test.assertNotNull
 
 class FunctionTestService {
 
-
-    private val employeeRepository: EmployeeRepository = mockk()
-    private val functionServiceImpl = EmployeeServiceImpl(employeeRepository)
+    private val employeeRepository = mockk<EmployeeRepository>()
+    private val epiRepository = mockk<EPIRepository>()
+    private val toolRepository = mockk<ToolRepository>()
+    private val workRepository = mockk<WorkRepository>()
+    private val functionServiceImpl = EmployeeServiceImpl(employeeRepository, epiRepository, toolRepository)
 
     private val functionModel = FunctionModel(
         function = "function 2",

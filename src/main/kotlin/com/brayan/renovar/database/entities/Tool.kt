@@ -5,12 +5,15 @@ import com.brayan.renovar.models.ToolModel
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import org.hibernate.annotations.GenericGenerator
 import org.springframework.data.crossstore.ChangeSetPersister
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -27,8 +30,9 @@ data class Tool(
     @Column(name = "nome")
     val name: String,
     @Column(name = "data_compra")
-    val purchaseDate: String,
+    val purchaseDate: LocalDate,
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     val toolStatus: ToolStatus,
     @Column(name = "valor_unitario")
     val unitValue: Double,
@@ -39,7 +43,9 @@ data class Tool(
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
     val toolsWorks: List<ToolsWork> = mutableListOf(),
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val toolsEmployees: List<ToolsEmployees> = mutableListOf()
+    val toolsEmployees: List<ToolsEmployees> = mutableListOf(),
+    @Column(name = "quantidade")
+    val quantity: Int? = null
 ){
     fun toToolModel() = ToolModel(
         id = id,
@@ -50,7 +56,8 @@ data class Tool(
         creationDate = creationDate,
         updateDate = updateDate,
         toolsWorks = toolsWorks.map { it.toToolsWorkModel() },
-        toolsEmployees = toolsEmployees.map { it.toToolsEmployeesModel() }
+        toolsEmployees = toolsEmployees.map { it.toToolsEmployeesModel() },
+        quantity = quantity
     )
 
     companion object{
@@ -62,7 +69,8 @@ data class Tool(
                 toolStatus = toolModel.toolStatus,
                 unitValue = toolModel.unitValue,
                 creationDate = toolModel.creationDate,
-                updateDate = toolModel.updateDate
+                updateDate = toolModel.updateDate,
+                quantity = toolModel.quantity
             )
             val works = toolModel.toolsWorks.map { toolsWorkModel ->
                 val work = work.find { it.id == toolsWorkModel.workId } ?: throw ChangeSetPersister.NotFoundException()
@@ -93,6 +101,8 @@ data class Tool(
                     endDate = toolsEmployeesModel.endDate,
                     quantity = toolsEmployeesModel.quantity,
                     creationDate = toolsEmployeesModel.creationDate,
+                    status = toolsEmployeesModel.status,
+                    updateDate = toolsEmployeesModel.updateDate
                 )
             }
             return tool.copy(toolsWorks = works, toolsEmployees = employeeTools)

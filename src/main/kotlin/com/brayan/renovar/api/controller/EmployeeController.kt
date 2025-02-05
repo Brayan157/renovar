@@ -1,7 +1,12 @@
 package com.brayan.renovar.api.controller
 
+import com.brayan.renovar.api.request.ADDEPISEmployee
+import com.brayan.renovar.api.request.AddToolsForEmployeeRequest
 import com.brayan.renovar.api.request.EmployeeUpdateRequest
 import com.brayan.renovar.api.request.FunctionRequest
+import com.brayan.renovar.api.request.RemoveToolEmployeeRequest
+import com.brayan.renovar.api.request.RemoveToolWorkRequest
+import com.brayan.renovar.api.request.ReturnEpi
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
 import com.brayan.renovar.services.interfaces.EmployeeService
@@ -14,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 
-@RestController()
+@RestController
 @RequestMapping("/employee")
 class EmployeeController(
     private val employeeService: EmployeeService
@@ -39,4 +44,17 @@ class EmployeeController(
 
     @GetMapping("/status")
     fun getEmployeesByStatus(@RequestBody status: EmployeeStatus) = employeeService.getEmployeesByStatus(status)
+    @GetMapping("/name")
+    fun getEmployeesByName(@RequestBody name: String) = employeeService.getEmployeesByName(name)
+    @PutMapping("/addEPI")
+    fun addEPI(@RequestBody addepisEmployee: ADDEPISEmployee) = employeeService.addEPI(addepisEmployee)
+
+    //funcionario devolvendo epis
+    @PutMapping("/returnEPI")
+    fun returnEPI(@RequestBody returnEpi: ReturnEpi) = employeeService.returnEPI(returnEpi)
+
+    @PutMapping("/addToolsForEmployee")
+    fun addToolsForEmployee(@RequestBody addToolsForEmployeeRequest: AddToolsForEmployeeRequest) = employeeService.addToolsForEmployee(addToolsForEmployeeRequest)
+    @PutMapping("/removeToolsForEmployee")
+    fun removeToolsForEmployee(@RequestBody removeToolsFroEmployee: RemoveToolEmployeeRequest) = employeeService.removeToolsForEmployee(removeToolsFroEmployee)
 }

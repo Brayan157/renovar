@@ -1,6 +1,9 @@
 package com.brayan.renovar.database.repositories.interfaces
 
+import com.brayan.renovar.database.entities.EPI
 import com.brayan.renovar.database.entities.Employee
+import com.brayan.renovar.database.entities.Tool
+import com.brayan.renovar.database.entities.Work
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
 import com.brayan.renovar.models.FunctionModel
@@ -17,6 +20,7 @@ interface EmployeeRepository {
     fun findAllEmployees(): List<EmployeeModel>
     fun findEmployeeById(employeeId: UUID): EmployeeModel
     fun findAllByStatus(status: EmployeeStatus): List<EmployeeModel>
+    fun findAllByName(name: String): List<EmployeeModel>
 
 
 }

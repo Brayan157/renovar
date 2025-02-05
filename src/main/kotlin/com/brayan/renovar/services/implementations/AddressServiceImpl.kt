@@ -5,6 +5,7 @@ import com.brayan.renovar.database.repositories.interfaces.AddressRepository
 import com.brayan.renovar.models.AddressModel
 import com.brayan.renovar.services.interfaces.AddressService
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AddressServiceImpl(
@@ -26,6 +27,10 @@ class AddressServiceImpl(
             zipCode = addressUpdateRequest.zipCode  ?: address.zipCode
         )
         return AddressRepository.save(addressModel)
+    }
+
+    override fun getAddressById(id: UUID): AddressModel {
+        return AddressRepository.findById(id)
     }
 
 

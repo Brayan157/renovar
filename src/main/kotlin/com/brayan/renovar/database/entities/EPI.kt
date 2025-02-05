@@ -12,6 +12,7 @@ import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.crossstore.ChangeSetPersister
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -25,19 +26,19 @@ data class EPI(
     @Column(name = "nome")
     val name: String,
     @Column(name = "certificado_aprovacao")
-    val approvalCertificate: String,
+    val approvalCertificate: String? = null,
     @Column(name = "quantidade")
     val quantity: Int,
     @Column(name = "valor_unitario")
-    val unitValue: Double,
+    val unitValue: Double? = null,
     @Column(name = "data_fabricacao")
-    val manufacturingDate: String,
+    val manufacturingDate: LocalDate,
     @Column(name = "data_validade")
-    val expirationDate: String,
+    val expirationDate: LocalDate? = null,
     @Column(name = "tag")
-    val tag: String,
+    val tag: String? = null,
     @Column(name = "lote")
-    val lot:String,
+    val lot:String? = null,
     @Column(name = "creation_date")
     @CreationTimestamp
     val creationDate: LocalDateTime? = null,
@@ -83,7 +84,11 @@ data class EPI(
                     epi = epi,
                     quantity = employeeEPIModel.quantity,
                     deliveryDate = employeeEPIModel.deliveryDate,
-                    reason = employeeEPIModel.reason
+                    reason = employeeEPIModel.reason,
+                    epiStatus = employeeEPIModel.epiStatus,
+                    creationDate = employeeEPIModel.creationDate,
+                    updateDate = employeeEPIModel.updateDate,
+                    returnDate = employeeEPIModel.returnDate
                 )
             }
             return epi.copy(employeeEpis = employeeEpis)

@@ -12,6 +12,7 @@ import jakarta.persistence.MapsId
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -33,9 +34,9 @@ data class ToolsWork(
     @Column(name = "motivo")
     val reason:String,
     @Column(name = "data_entrada")
-    val entryDate:String,
+    val entryDate:LocalDate,
     @Column(name = "data_saida")
-    val exitDate:String,
+    val exitDate:LocalDate? = null,
     @Column(name = "creation_date")
     @CreationTimestamp
     val creationDate:LocalDateTime? = null,

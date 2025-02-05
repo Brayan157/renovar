@@ -4,6 +4,7 @@ CREATE TABLE tb_ferramenta_funcionario(
     quantidade INT NOT NULL,
     data_entrega DATE NOT NULL,
     data_devolucao DATE,
+    status_ferramenta VARCHAR(80) NOT NULL,
     creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
     update_date TIMESTAMP WITH TIME ZONE NOT NULL,
     FOREIGN KEY (funcionario_id) REFERENCES tb_funcionario(id),

@@ -10,7 +10,7 @@ interface EmployeeSpringDataRepository: JpaRepository<Employee, UUID> {
     @Query("SELECT COALESCE(MAX(e.registration), 0) FROM Employee e")
         fun findLastRegistration(): Int
     fun findByEmployeeStatus(ativo: EmployeeStatus): List<Employee>
-
+    fun findByNameContainingIgnoreCase(name: String): List<Employee>
 
 
 }

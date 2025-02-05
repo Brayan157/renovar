@@ -1,16 +1,13 @@
 package com.brayan.renovar.database.repositories.implementations
 
-import com.brayan.renovar.database.entities.EPI
 import com.brayan.renovar.database.entities.Employee
 import com.brayan.renovar.database.entities.Function
-import com.brayan.renovar.database.entities.Tool
-import com.brayan.renovar.database.entities.Work
-import com.brayan.renovar.database.repositories.interfaces.EPIRepository
 import com.brayan.renovar.database.repositories.interfaces.EmployeeRepository
-import com.brayan.renovar.database.repositories.interfaces.ToolRepository
-import com.brayan.renovar.database.repositories.interfaces.WorkRepository
+import com.brayan.renovar.database.repositories.springData.EPISpringDataRepository
 import com.brayan.renovar.database.repositories.springData.EmployeeSpringDataRepository
 import com.brayan.renovar.database.repositories.springData.FunctionSpringDataRepository
+import com.brayan.renovar.database.repositories.springData.ToolSpringDataRepository
+import com.brayan.renovar.database.repositories.springData.WorkSpringDataRepository
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
 import com.brayan.renovar.models.FunctionModel
@@ -20,9 +17,11 @@ import java.util.UUID
 class EmployeeRepositoryImpl(
     val functionJpaRepository: FunctionSpringDataRepository,
     val employeeJpaRepository: EmployeeSpringDataRepository,
-    val workRepository: WorkRepository,
-    val epiRepository: EPIRepository,
-    val toolRepository: ToolRepository
+    val workRepository: WorkSpringDataRepository,
+    val toolRepository: ToolSpringDataRepository,
+    val epiRepository: EPISpringDataRepository
+
+
 ):EmployeeRepository {
     override fun save(functionModel: FunctionModel): FunctionModel {
         val function = Function.of(functionModel)
@@ -41,17 +40,17 @@ class EmployeeRepositoryImpl(
         return functionJpaRepository.findById(id).map { it.toFunctionModel() }.orElseThrow()
     }
 
-    override fun saveEmployee(employeeModel: EmployeeModel): EmployeeModel {
+    override fun saveEmployee(
+        employeeModel: EmployeeModel,
+    ): EmployeeModel {
         val works = if (employeeModel.employeesWorks.isNotEmpty()) {
             workRepository.findAllById(employeeModel.employeesWorks.map { it.workId })
         } else emptyList()
-
-        val epis = if (employeeModel.employeeEpis.isNotEmpty()) {
-            epiRepository.findAllById(employeeModel.employeeEpis.map { it.epiId })
-        } else emptyList()
-
         val tools = if (employeeModel.toolsEmployee.isNotEmpty()) {
             toolRepository.findAllById(employeeModel.toolsEmployee.map { it.toolId })
+        } else emptyList()
+        val epis = if (employeeModel.employeeEpis.isNotEmpty()) {
+            epiRepository.findAllById(employeeModel.employeeEpis.map { it.epiId })
         } else emptyList()
         val employee = Employee.of(employeeModel, works, epis, tools)
         return employeeJpaRepository.save(employee).toEmployeeModel()
@@ -75,6 +74,10 @@ class EmployeeRepositoryImpl(
 
     override fun findAllByStatus(status: EmployeeStatus): List<EmployeeModel> {
         return employeeJpaRepository.findByEmployeeStatus(status).map { it.toEmployeeModel() }
+    }
+
+    override fun findAllByName(name: String): List<EmployeeModel> {
+        return employeeJpaRepository.findByNameContainingIgnoreCase(name).map { it.toEmployeeModel() }
     }
 
 }
