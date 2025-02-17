@@ -16,25 +16,25 @@ import com.brayan.renovar.database.entities.Tool
 import com.brayan.renovar.database.entities.ToolsEmployees
 import com.brayan.renovar.database.entities.ToolsEmployeesKey
 import com.brayan.renovar.database.entities.Work
+import com.brayan.renovar.database.repositories.interfaces.CreationRepository
 import com.brayan.renovar.database.repositories.interfaces.EPIRepository
+import com.brayan.renovar.database.repositories.interfaces.EmployeeEPIRepository
 import com.brayan.renovar.database.repositories.interfaces.EmployeeRepository
 import com.brayan.renovar.database.repositories.interfaces.ToolRepository
 import com.brayan.renovar.database.repositories.interfaces.WorkRepository
-import com.brayan.renovar.database.repositories.springData.EmployeeSpringDataRepository
 import com.brayan.renovar.enum.EPIStatus
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.enum.ToolEmployee
 import com.brayan.renovar.enum.ToolStatus
 import com.brayan.renovar.models.AddressModel
-import com.brayan.renovar.models.EmployeeEPIModel
 import com.brayan.renovar.models.EmployeeModel
 import com.brayan.renovar.models.FunctionModel
 import com.brayan.renovar.services.implementations.EmployeeServiceImpl
-import com.brayan.renovar.services.interfaces.EmployeeService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -48,8 +48,10 @@ class EmployeeServiceTest {
     private val employeeRepository = mockk<EmployeeRepository>()
     private val epiRepository = mockk<EPIRepository>()
     private val toolRepository = mockk<ToolRepository>()
-    private val workRepository = mockk<WorkRepository>()
-    private val employeeServiceImpl = EmployeeServiceImpl(employeeRepository, epiRepository, toolRepository)
+    private val creationRepository = mockk<CreationRepository>()
+    private val employeeEpiRepository = mockk<EmployeeEPIRepository>()
+    private val entityManager = mockk<EntityManager>()
+    private val employeeServiceImpl = EmployeeServiceImpl(employeeRepository, epiRepository, toolRepository, entityManager, employeeEpiRepository, creationRepository)
     private val functionModel = FunctionModel(
         id = UUID.randomUUID(),
         function = "function 2",

@@ -1,23 +1,18 @@
 package com.brayan.renovar
 
 import com.brayan.renovar.api.request.FunctionRequest
-import com.brayan.renovar.database.entities.Function
-import com.brayan.renovar.database.repositories.implementations.EmployeeRepositoryImpl
 import com.brayan.renovar.database.repositories.interfaces.EPIRepository
 import com.brayan.renovar.database.repositories.interfaces.EmployeeRepository
 import com.brayan.renovar.database.repositories.interfaces.ToolRepository
 import com.brayan.renovar.database.repositories.interfaces.WorkRepository
 import com.brayan.renovar.models.FunctionModel
 import com.brayan.renovar.services.implementations.EmployeeServiceImpl
-import com.brayan.renovar.services.interfaces.EmployeeService
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
-import org.mockito.Mockito.verify
-import org.springframework.beans.factory.annotation.Autowired
 import java.util.UUID
 import kotlin.test.assertNotNull
 

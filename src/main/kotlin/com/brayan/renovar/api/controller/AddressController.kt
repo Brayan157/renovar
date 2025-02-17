@@ -20,7 +20,7 @@ class AddressController(
     @PostMapping
     fun createAddress(@RequestBody addressModel: AddressModel) = addressService.createAddress(addressModel)
 
-    @PutMapping()
+    @PutMapping
     fun updateAddress(@RequestBody addressUpdateRequest: AddressUpdateRequest) = addressService.updateAddress(addressUpdateRequest)
     @GetMapping("id/{id}")
     fun getAddressById(@PathVariable id: UUID) = addressService.getAddressById(id)

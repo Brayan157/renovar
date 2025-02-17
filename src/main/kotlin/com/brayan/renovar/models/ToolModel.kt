@@ -15,5 +15,5 @@ data class ToolModel(
     val toolStatus: ToolStatus,
     val toolsWorks: List<ToolsWorkModel> = mutableListOf(),
     val toolsEmployees: List<ToolsEmployeesModel> = mutableListOf(),
-    val quantity: Int? = null,
+    val quantity: Int
 )

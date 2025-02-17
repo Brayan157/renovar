@@ -26,10 +26,10 @@ data class Function(
     val description: String,
     @Column(name = "creation_date")
     @CreationTimestamp
-    val creationDate: LocalDateTime? = null,
+    val creationDate: LocalDateTime?,
     @Column(name = "update_date")
     @UpdateTimestamp
-    val updateDate: LocalDateTime? = null
+    val updateDate: LocalDateTime?
 ) {
     fun toFunctionModel() = FunctionModel(
         id = id,

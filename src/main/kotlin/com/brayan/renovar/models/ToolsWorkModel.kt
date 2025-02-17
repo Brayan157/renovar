@@ -12,5 +12,6 @@ data class ToolsWorkModel(
     val entryDate:LocalDate,
     val exitDate:LocalDate? = null,
     val creationDate:LocalDateTime? = null,
-    val updateDate: LocalDateTime? = null
+    val updateDate: LocalDateTime? = null,
+    val creationDateId: UUID
 )

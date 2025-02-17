@@ -7,8 +7,10 @@ import java.util.UUID
 
 @Embeddable
 class EmployeeEPIId (
-    @Column(name = "funcionario_id")
+    @Column(name = "id_funcionario")
     val employeeId: UUID? = null,
-    @Column(name = "epi_id")
-    val epiId: UUID? = null
+    @Column(name = "id_epi")
+    val epiId: UUID? = null,
+    @Column(name = "creation_date")
+    val creationDateId: UUID? = null
 ): Serializable

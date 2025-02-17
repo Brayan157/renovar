@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.EmployeeResponse
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
 import com.fasterxml.jackson.annotation.JsonManagedReference
@@ -9,10 +10,12 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.OneToMany
 import jakarta.persistence.OneToOne
+import jakarta.persistence.SequenceGenerator
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
@@ -29,8 +32,8 @@ data class Employee(
     @GeneratedValue(generator = "uuid-hibernate-generator")
     @GenericGenerator(name = "uuid-hibernate-generator", strategy = "org.hibernate.id.UUIDGenerator")
     val id: UUID? = null,
-    @Column(name = "matricula")
-    val registration: String? = null,
+    @Column(name = "matricula", unique = true, nullable = false)
+    val registration: Int? = null,
     @Column(name = "nome")
     val name: String,
     @Column
@@ -86,6 +89,19 @@ data class Employee(
         employeeEpis = employeeEpis.map { it.toEmployeeEPIModel() },
         toolsEmployee = toolsEmployee.map { it.toToolsEmployeesModel() }
     )
+    fun toEmployeeResponse() = EmployeeResponse(
+        id = id!!,
+        name = name,
+        registration = registration!!,
+        cpf = cpf,
+        birthDate = birthDate.toString(),
+        phones = phones,
+        generalRegistration = generalRegistration,
+        hourlyRate = hourlyRate,
+        function = function.function,
+        status = employeeStatus,
+        addressModel = address.toAddressModel()
+    )
 
 companion object{
         fun of (employeeModel: EmployeeModel, works:List<Work>, epi:List<EPI>, tools: List<Tool>): Employee{
@@ -109,11 +125,12 @@ companion object{
                     val work = works.find { it.id == employeeWorkModel.workId }
                     work?.let {
                         EmployeeWork(
-                            id = EmployeeWorkKey(employee.id, work.id),
+                            id = EmployeeWorkKey(employee.id, work.id, employeeWorkModel.creationDateId),
                             employee = employee,
                             work = work,
                             startDate = employeeWorkModel.startDate,
-                            endDate = employeeWorkModel.endDate
+                            endDate = employeeWorkModel.endDate,
+                            creationDateEntity = CreationDate()
                         )
                     }
                 }
@@ -124,7 +141,7 @@ companion object{
                     val foundEpi = epi.find { it.id == employeeEPIModel.epiId }
                     foundEpi?.let {
                         EmployeeEPI(
-                            id = EmployeeEPIId(employee.id, foundEpi.id),
+                            id = EmployeeEPIId(employee.id, foundEpi.id, employeeEPIModel.creationDateId),
                             employee = employee,
                             epi = foundEpi,
                             quantity = employeeEPIModel.quantity,
@@ -132,8 +149,9 @@ companion object{
                             reason = employeeEPIModel.reason,
                             epiStatus = employeeEPIModel.epiStatus,
                             returnDate = employeeEPIModel.returnDate,
+                            updateDate = employeeEPIModel.updateDate,
                             creationDate = employeeEPIModel.creationDate,
-                            updateDate = employeeEPIModel.updateDate
+                            creationDateEntity = CreationDate()
                         )
                     }
                 }
@@ -144,7 +162,7 @@ companion object{
                     val foundTool = tools.find { it.id == employeeTools.toolId }
                     foundTool?.let {
                         ToolsEmployees(
-                            id = ToolsEmployeesKey(employee.id, foundTool.id),
+                            id = ToolsEmployeesKey(employee.id, foundTool.id, employeeTools.creationDateId),
                             employee = employee,
                             tool = foundTool,
                             startDate = employeeTools.startDate,
@@ -152,7 +170,8 @@ companion object{
                             quantity = employeeTools.quantity,
                             status = employeeTools.status,
                             creationDate = employeeTools.creationDate,
-                            updateDate = employeeTools.updateDate
+                            updateDate = employeeTools.updateDate,
+                            creationDateEntity = CreationDate()
 
                         )
                     }

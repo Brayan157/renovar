@@ -31,6 +31,11 @@ data class ToolsWork(
     @JoinColumn(name = "obra_id")
     val work: Work,
 
+    @ManyToOne
+    @MapsId("creationDateId")
+    @JoinColumn(name = "id_creation_date")
+    val creationDateEntity: CreationDate,
+
     @Column(name = "motivo")
     val reason:String,
     @Column(name = "data_entrada")
@@ -51,6 +56,7 @@ data class ToolsWork(
         entryDate = entryDate,
         exitDate = exitDate,
         creationDate = creationDate,
-        updateDate = updateDate
+        updateDate = updateDate,
+        creationDateId = creationDateEntity.id!!
     )
 }

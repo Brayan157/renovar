@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "tb_funcionario_ferramentas")
+@Table(name = "tb_ferramenta_funcionario")
 data class ToolsEmployees(
     @EmbeddedId
     private val id: ToolsEmployeesKey = ToolsEmployeesKey(),
@@ -31,9 +31,15 @@ data class ToolsEmployees(
     @MapsId("toolId")
     @JoinColumn(name = "ferramenta_id")
     val tool: Tool,
-    @Column(name = "data_inicio")
+
+    @ManyToOne
+    @MapsId("creationDateId")
+    @JoinColumn(name = "id_creation_date")
+    val creationDateEntity: CreationDate,
+
+    @Column(name = "data_entrega")
     val startDate: LocalDate,
-    @Column(name = "data_fim")
+    @Column(name = "data_devolucao")
     val endDate: LocalDate? = null,
     @Column(name = "quantidade")
     val quantity: Int? = null,
@@ -55,6 +61,7 @@ data class ToolsEmployees(
         quantity = quantity,
         creationDate = creationDate,
         updateDate = updateDate,
-        status = status
+        status = status,
+        creationDateId = creationDateEntity.id!!
     )
 }

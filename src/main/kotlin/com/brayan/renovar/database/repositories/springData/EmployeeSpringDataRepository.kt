@@ -11,6 +11,8 @@ interface EmployeeSpringDataRepository: JpaRepository<Employee, UUID> {
         fun findLastRegistration(): Int
     fun findByEmployeeStatus(ativo: EmployeeStatus): List<Employee>
     fun findByNameContainingIgnoreCase(name: String): List<Employee>
+    fun findByRegistration(registration: Int): Employee
+    fun findByCpf(cpf: String): Employee
 
 
 }

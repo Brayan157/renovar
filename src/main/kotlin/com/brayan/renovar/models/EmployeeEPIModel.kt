@@ -15,4 +15,5 @@ data class EmployeeEPIModel(
     val reason: String,
     val creationDate: LocalDateTime? = null,
     val updateDate: LocalDateTime? = null,
+    val creationDateId: UUID
 )

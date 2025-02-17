@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.repositories.implementations
 
+import com.brayan.renovar.api.response.EmployeeResponse
 import com.brayan.renovar.database.entities.Employee
 import com.brayan.renovar.database.entities.Function
 import com.brayan.renovar.database.repositories.interfaces.EmployeeRepository
@@ -29,7 +30,7 @@ class EmployeeRepositoryImpl(
     }
 
     override fun findByName(name: String): List<FunctionModel> {
-        return functionJpaRepository.findByFunction(name).map { it.toFunctionModel() }
+        return functionJpaRepository.findByFunctionContainingIgnoreCase(name).map { it.toFunctionModel() }
     }
 
     override fun findAll(): List<FunctionModel> {
@@ -42,7 +43,7 @@ class EmployeeRepositoryImpl(
 
     override fun saveEmployee(
         employeeModel: EmployeeModel,
-    ): EmployeeModel {
+    ): EmployeeResponse {
         val works = if (employeeModel.employeesWorks.isNotEmpty()) {
             workRepository.findAllById(employeeModel.employeesWorks.map { it.workId })
         } else emptyList()
@@ -53,31 +54,44 @@ class EmployeeRepositoryImpl(
             epiRepository.findAllById(employeeModel.employeeEpis.map { it.epiId })
         } else emptyList()
         val employee = Employee.of(employeeModel, works, epis, tools)
-        return employeeJpaRepository.save(employee).toEmployeeModel()
+        return employeeJpaRepository.save(employee).toEmployeeResponse()
+
     }
 
     override fun findAllById(ids: List<UUID>): List<Employee> {
         return employeeJpaRepository.findAllById(ids)
     }
 
-    override fun findLastRegistration(): String {
-        return employeeJpaRepository.findLastRegistration().toString()
+    override fun findLastRegistration(): Int {
+        return employeeJpaRepository.findLastRegistration()
     }
 
-    override fun findAllEmployees(): List<EmployeeModel> {
-        return employeeJpaRepository.findAll().map { it.toEmployeeModel() }
+    override fun findAllEmployees(): List<EmployeeResponse> {
+        return employeeJpaRepository.findAll().map { it.toEmployeeResponse() }
     }
 
-    override fun findEmployeeById(employeeId: UUID): EmployeeModel {
+    override fun findEmployeeById(employeeId: UUID): EmployeeResponse {
+        return employeeJpaRepository.findById(employeeId).map { it.toEmployeeResponse()}.orElseThrow()
+    }
+
+    override fun findAllByStatus(status: EmployeeStatus): List<EmployeeResponse> {
+        return employeeJpaRepository.findByEmployeeStatus(status).map { it.toEmployeeResponse() }
+    }
+
+    override fun findAllByName(name: String): List<EmployeeResponse> {
+        return employeeJpaRepository.findByNameContainingIgnoreCase(name).map { it.toEmployeeResponse() }
+    }
+
+    override fun findEmployeeByIdModel(employeeId: UUID): EmployeeModel {
         return employeeJpaRepository.findById(employeeId).map { it.toEmployeeModel() }.orElseThrow()
     }
 
-    override fun findAllByStatus(status: EmployeeStatus): List<EmployeeModel> {
-        return employeeJpaRepository.findByEmployeeStatus(status).map { it.toEmployeeModel() }
+    override fun findEmployeeByRegistration(registration: Int): EmployeeResponse {
+        return employeeJpaRepository.findByRegistration(registration).toEmployeeResponse()
     }
 
-    override fun findAllByName(name: String): List<EmployeeModel> {
-        return employeeJpaRepository.findByNameContainingIgnoreCase(name).map { it.toEmployeeModel() }
+    override fun findEmployeeByCPF(cpf: String): EmployeeResponse {
+        return employeeJpaRepository.findByCpf(cpf).toEmployeeResponse()
     }
 
 }

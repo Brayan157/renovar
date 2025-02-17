@@ -2,6 +2,7 @@ package com.brayan.renovar.api.controller
 
 import com.brayan.renovar.api.request.ADDEPISEmployee
 import com.brayan.renovar.api.request.AddToolsForEmployeeRequest
+import com.brayan.renovar.api.request.EmployeeStatusRequest
 import com.brayan.renovar.api.request.EmployeeUpdateRequest
 import com.brayan.renovar.api.request.FunctionRequest
 import com.brayan.renovar.api.request.RemoveToolEmployeeRequest
@@ -9,6 +10,7 @@ import com.brayan.renovar.api.request.RemoveToolWorkRequest
 import com.brayan.renovar.api.request.ReturnEpi
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
+import com.brayan.renovar.models.FunctionModel
 import com.brayan.renovar.services.interfaces.EmployeeService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -42,12 +44,10 @@ class EmployeeController(
     @PutMapping()
     fun updateEmployee(@RequestBody employeeRequest: EmployeeUpdateRequest) = employeeService.updateEmployee(employeeRequest)
 
-    @GetMapping("/status")
-    fun getEmployeesByStatus(@RequestBody status: EmployeeStatus) = employeeService.getEmployeesByStatus(status)
-    @GetMapping("/name")
-    fun getEmployeesByName(@RequestBody name: String) = employeeService.getEmployeesByName(name)
-    @PutMapping("/addEPI")
-    fun addEPI(@RequestBody addepisEmployee: ADDEPISEmployee) = employeeService.addEPI(addepisEmployee)
+    @GetMapping("/status/{status}")
+    fun getEmployeesByStatus(@PathVariable status: EmployeeStatus) = employeeService.getEmployeesByStatus(status)
+    @GetMapping("/name/{name}")
+    fun getEmployeesByName(@PathVariable name:String) = employeeService.getEmployeesByName(name)
 
     //funcionario devolvendo epis
     @PutMapping("/returnEPI")
@@ -57,4 +57,6 @@ class EmployeeController(
     fun addToolsForEmployee(@RequestBody addToolsForEmployeeRequest: AddToolsForEmployeeRequest) = employeeService.addToolsForEmployee(addToolsForEmployeeRequest)
     @PutMapping("/removeToolsForEmployee")
     fun removeToolsForEmployee(@RequestBody removeToolsFroEmployee: RemoveToolEmployeeRequest) = employeeService.removeToolsForEmployee(removeToolsFroEmployee)
+    @PutMapping("/addEPItoEmployee")
+    fun addEPItoEmployee(@RequestBody addepisEmployee: ADDEPISEmployee) = employeeService.addEPIToEmployee(addepisEmployee)
 }

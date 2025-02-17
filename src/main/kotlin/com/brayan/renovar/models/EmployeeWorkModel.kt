@@ -14,4 +14,5 @@ data class EmployeeWorkModel(
     val endDate: LocalDate? = null,
     val creationDate: LocalDateTime? = null,
     val updateData: LocalDateTime? = null,
+    val creationDateId: UUID
 )

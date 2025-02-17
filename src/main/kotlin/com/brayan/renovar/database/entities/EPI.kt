@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.EpiResponse
 import com.brayan.renovar.models.EPIModel
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -33,7 +34,7 @@ data class EPI(
     val unitValue: Double? = null,
     @Column(name = "data_fabricacao")
     val manufacturingDate: LocalDate,
-    @Column(name = "data_validade")
+    @Column(name = "data_vencimento")
     val expirationDate: LocalDate? = null,
     @Column(name = "tag")
     val tag: String? = null,
@@ -61,6 +62,17 @@ data class EPI(
         updateDate = updateDate,
         employeeEpis = employeeEpis.map { it.toEmployeeEPIModel() }
     )
+    fun toEpiResponse() = EpiResponse(
+        id = id!!,
+        name = name,
+        approvalCertificate = approvalCertificate,
+        quantity = quantity,
+        unitValue = unitValue,
+        manufacturingDate = manufacturingDate,
+        expirationDate = expirationDate,
+        tag = tag,
+        lot = lot
+    )
     companion object {
         fun of (epiModel:EPIModel, employees:List<Employee>):EPI {
             val epi = EPI(
@@ -79,16 +91,17 @@ data class EPI(
             val employeeEpis = epiModel.employeeEpis.map { employeeEPIModel ->
                 val employee = employees.find { it.id == employeeEPIModel.employeeId } ?: throw ChangeSetPersister.NotFoundException()
                 EmployeeEPI(
-                    id = EmployeeEPIId(employee.id, epi.id),
+                    id = EmployeeEPIId(employee.id, epi.id, employeeEPIModel.creationDateId),
                     employee = employee,
                     epi = epi,
                     quantity = employeeEPIModel.quantity,
                     deliveryDate = employeeEPIModel.deliveryDate,
                     reason = employeeEPIModel.reason,
                     epiStatus = employeeEPIModel.epiStatus,
-                    creationDate = employeeEPIModel.creationDate,
                     updateDate = employeeEPIModel.updateDate,
-                    returnDate = employeeEPIModel.returnDate
+                    returnDate = employeeEPIModel.returnDate,
+                    creationDate = employeeEPIModel.creationDate,
+                    creationDateEntity = CreationDate()
                 )
             }
             return epi.copy(employeeEpis = employeeEpis)

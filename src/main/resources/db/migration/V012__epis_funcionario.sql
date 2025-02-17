@@ -1,6 +1,7 @@
 CREATE TABLE tb_epis_funcionario(
-    id_funcionario INT NOT NULL,
-    id_epi INT NOT NULL,
+    id_funcionario UUID NOT NULL,
+    id_epi UUID NOT NULL,
+    id_creation_date UUID NOT NULL,
     quantidade INT NOT NULL,
     motivo VARCHAR(255) NOT NULL,
     data_entrega DATE NOT NULL,
@@ -10,5 +11,6 @@ CREATE TABLE tb_epis_funcionario(
     update_date TIMESTAMP WITH TIME ZONE NOT NULL,
     FOREIGN KEY (id_funcionario) REFERENCES tb_funcionario(id),
     FOREIGN KEY (id_epi) REFERENCES tb_epi(id),
-    PRIMARY KEY (id_funcionario, id_epi)
+    FOREIGN KEY (id_creation_date) REFERENCES tb_creation_date(id),
+    PRIMARY KEY (id_funcionario, id_epi, id_creation_date)
 );

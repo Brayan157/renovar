@@ -11,7 +11,6 @@ spring:
     default-property-inclusion: non_null
   application:
     name: renovar
-
 api:
   security:
     token:

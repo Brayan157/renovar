@@ -13,5 +13,6 @@ data class ToolsEmployeesModel(
     val quantity: Int?,
     val creationDate: LocalDateTime? = null,
     val updateDate: LocalDateTime? = null,
-    val status: ToolEmployee
+    val status: ToolEmployee,
+    val creationDateId: UUID
 )

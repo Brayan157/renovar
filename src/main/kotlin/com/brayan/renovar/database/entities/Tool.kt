@@ -45,7 +45,7 @@ data class Tool(
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
     val toolsEmployees: List<ToolsEmployees> = mutableListOf(),
     @Column(name = "quantidade")
-    val quantity: Int? = null
+    val quantity: Int
 ){
     fun toToolModel() = ToolModel(
         id = id,

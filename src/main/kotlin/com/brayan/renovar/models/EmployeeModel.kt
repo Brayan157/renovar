@@ -7,7 +7,7 @@ import java.util.UUID
 
 data class EmployeeModel(
     val id: UUID? = null,
-    val registration: String? = null,
+    val registration: Int? = null,
     val name: String,
     val cpf: String,
     val birthDate: LocalDate,

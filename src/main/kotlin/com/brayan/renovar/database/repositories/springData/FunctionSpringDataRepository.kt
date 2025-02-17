@@ -5,5 +5,6 @@ import com.brayan.renovar.database.entities.Function
 import java.util.UUID
 
 interface FunctionSpringDataRepository:JpaRepository<Function, UUID> {
-    fun findByFunction(function: String): List<Function>
+
+    fun findByFunctionContainingIgnoreCase(name: String): List<Function>
 }

@@ -29,6 +29,12 @@ data class EmployeeWork(
     @MapsId("workId")
     @JoinColumn(name = "obra_id")
     val work: Work,
+
+    @ManyToOne
+    @MapsId("creationDateId")
+    @JoinColumn(name = "id_creation_date")
+    val creationDateEntity: CreationDate,
+
     @Column(name = "data_inicio")
     val startDate: LocalDate? = null,
     @Column(name = "data_fim")
@@ -46,7 +52,8 @@ data class EmployeeWork(
         startDate = startDate,
         endDate = endDate,
         creationDate = creationDate,
-        updateData = updateData
+        updateData = updateData,
+        creationDateId = creationDateEntity.id!!
     )
     companion object{
         fun fromEmployeeWorkModel(employeeWorkModel: EmployeeWorkModel, employee: Employee, work: Work) = EmployeeWork(
@@ -56,7 +63,8 @@ data class EmployeeWork(
             startDate = employeeWorkModel.startDate,
             endDate = employeeWorkModel.endDate,
             creationDate = employeeWorkModel.creationDate,
-            updateData = employeeWorkModel.updateData
+            updateData = employeeWorkModel.updateData,
+            creationDateEntity = CreationDate()
         )
     }
 }

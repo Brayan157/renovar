@@ -10,5 +10,7 @@ class ToolsEmployeesKey (
     @Column(name = "funcionario_id")
     val employeeId: UUID? = null,
     @Column(name = "ferramenta_id")
-    val toolId: UUID? = null
+    val toolId: UUID? = null,
+    @Column(name = "creation_date")
+    val creationDateId: UUID? = null
 ): Serializable
