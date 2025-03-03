@@ -1,6 +1,8 @@
 package com.brayan.renovar.database.entities
+import com.brayan.renovar.api.response.WorkResponse
 import com.brayan.renovar.enum.WorkStatus
 import com.brayan.renovar.models.WorkModel
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -45,8 +47,10 @@ data class Work(
     @JsonManagedReference
     val address: Address,
     @OneToMany(mappedBy = "work", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonBackReference
     val employeesWorks: List<EmployeeWork> = mutableListOf(),
     @OneToMany(mappedBy = "work", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonBackReference
     val toolsWorks: List<ToolsWork> = mutableListOf()
 ){
     fun toWorkModel() = WorkModel(
@@ -59,6 +63,13 @@ data class Work(
         address = address.toAddressModel(),
         employeesWorks = employeesWorks.map { it.toEmployeeWorkModel() },
         toolsWorks = toolsWorks.map { it.toToolsWorkModel() }
+    )
+    fun toWorkResponse() = WorkResponse(
+        id = id!!,
+        companyProviding = companyProviding,
+        cnpj = cnpj,
+        workStatus = workStatus,
+        address = address.toAddressModel()
     )
     companion object{
         fun of(workModel: WorkModel, employees: List<Employee>, tools: List<Tool>): Work{
@@ -76,11 +87,14 @@ data class Work(
                     val employee = employees.find { it.id == employeeWorkModel.employeeId }
                     employee?.let {
                         EmployeeWork(
-                            id = EmployeeWorkKey(employee.id, work.id),
+                            id = EmployeeWorkKey(employee.id, work.id, employeeWorkModel.creationDateId),
                             employee = employee,
                             work = work,
                             startDate = employeeWorkModel.startDate,
-                            endDate = employeeWorkModel.endDate
+                            endDate = employeeWorkModel.endDate,
+                            creationDate = employeeWorkModel.creationDate,
+                            updateData = employeeWorkModel.updateData,
+                            creationDateEntity = CreationDate()
                         )
                     }
                 }
@@ -90,14 +104,15 @@ data class Work(
                     val tool = tools.find { it.id == toolsWorkModel.toolsId }
                     tool?.let {
                         ToolsWork(
-                            id = ToolsWorkId(tool.id, work.id),
+                            id = ToolsWorkId(tool.id, work.id, toolsWorkModel.creationDateId),
                             tool = tool,
                             work = work,
                             reason = toolsWorkModel.reason,
                             entryDate = toolsWorkModel.entryDate,
                             exitDate = toolsWorkModel.exitDate,
                             creationDate = toolsWorkModel.creationDate,
-                            updateDate = toolsWorkModel.updateDate
+                            updateDate = toolsWorkModel.updateDate,
+                            creationDateEntity = CreationDate()
                         )
                     }
                 }

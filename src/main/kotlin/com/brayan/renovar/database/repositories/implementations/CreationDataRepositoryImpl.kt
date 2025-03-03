@@ -13,7 +13,7 @@ class CreationDataRepositoryImpl(
         return creationJpaRepository.save(CreationDate()).id
     }
 
-    override fun findCreationById(id: UUID): UUID? {
-        return creationJpaRepository.findById(id).map { it.id }.orElse(null)
+    override fun findCreationById(id: UUID): CreationDate {
+        return creationJpaRepository.findById(id).orElseThrow { Exception("Data de criação não encontrada") }
     }
 }

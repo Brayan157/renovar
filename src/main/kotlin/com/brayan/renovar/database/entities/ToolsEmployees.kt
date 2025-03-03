@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.EmployeeToolResponse
 import com.brayan.renovar.enum.ToolEmployee
 import com.brayan.renovar.models.ToolsEmployeesModel
 import jakarta.persistence.Column
@@ -34,7 +35,7 @@ data class ToolsEmployees(
 
     @ManyToOne
     @MapsId("creationDateId")
-    @JoinColumn(name = "id_creation_date")
+    @JoinColumn(name = "creation_date_id")
     val creationDateEntity: CreationDate,
 
     @Column(name = "data_entrega")
@@ -42,7 +43,7 @@ data class ToolsEmployees(
     @Column(name = "data_devolucao")
     val endDate: LocalDate? = null,
     @Column(name = "quantidade")
-    val quantity: Int? = null,
+    val quantity: Int,
     @Column(name = "creation_date")
     @CreationTimestamp
     val creationDate: LocalDateTime? = null,
@@ -62,6 +63,18 @@ data class ToolsEmployees(
         creationDate = creationDate,
         updateDate = updateDate,
         status = status,
+        creationDateId = creationDateEntity.id!!
+    )
+
+    fun toResponse() = EmployeeToolResponse(
+        employee = employee.toEmployeeResponse(),
+        tool = tool.toResponse(),
+        startDate = startDate,
+        endDate = endDate,
+        quantity = quantity,
+        status = status,
+        creationDate = creationDate,
+        updateDate = updateDate,
         creationDateId = creationDateEntity.id!!
     )
 }

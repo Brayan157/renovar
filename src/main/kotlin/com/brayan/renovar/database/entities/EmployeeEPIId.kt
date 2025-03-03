@@ -11,6 +11,6 @@ class EmployeeEPIId (
     val employeeId: UUID? = null,
     @Column(name = "id_epi")
     val epiId: UUID? = null,
-    @Column(name = "creation_date")
+    @Column(name = "id_creation_date")
     val creationDateId: UUID? = null
 ): Serializable

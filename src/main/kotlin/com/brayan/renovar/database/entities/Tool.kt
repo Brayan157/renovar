@@ -1,7 +1,9 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.ToolResponse
 import com.brayan.renovar.enum.ToolStatus
 import com.brayan.renovar.models.ToolModel
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -43,6 +45,7 @@ data class Tool(
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
     val toolsWorks: List<ToolsWork> = mutableListOf(),
     @OneToMany(mappedBy = "tool", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonBackReference
     val toolsEmployees: List<ToolsEmployees> = mutableListOf(),
     @Column(name = "quantidade")
     val quantity: Int
@@ -57,6 +60,14 @@ data class Tool(
         updateDate = updateDate,
         toolsWorks = toolsWorks.map { it.toToolsWorkModel() },
         toolsEmployees = toolsEmployees.map { it.toToolsEmployeesModel() },
+        quantity = quantity
+    )
+    fun toResponse() = ToolResponse(
+        id = id!!,
+        name = name,
+        purchaseDate = purchaseDate,
+        toolStatus = toolStatus,
+        unitValue = unitValue,
         quantity = quantity
     )
 
@@ -77,7 +88,8 @@ data class Tool(
                 ToolsWork(
                     id = ToolsWorkId(
                         toolsId = tool.id!!,
-                        workId = work.id!!
+                        workId = work.id!!,
+                        creationDateId = toolsWorkModel.creationDateId
                     ),
                     tool = tool,
                     work = work,
@@ -85,7 +97,8 @@ data class Tool(
                     entryDate = toolsWorkModel.entryDate,
                     exitDate = toolsWorkModel.exitDate,
                     creationDate = toolsWorkModel.creationDate,
-                    updateDate = toolsWorkModel.updateDate
+                    updateDate = toolsWorkModel.updateDate,
+                    creationDateEntity = CreationDate()
                 )
             }
             val employeeTools = toolModel.toolsEmployees.map { toolsEmployeesModel ->
@@ -93,7 +106,8 @@ data class Tool(
                 ToolsEmployees(
                     id = ToolsEmployeesKey(
                         toolId = tool.id!!,
-                        employeeId = employee.id!!
+                        employeeId = employee.id!!,
+                        creationDateId = toolsEmployeesModel.creationDateId
                     ),
                     tool = tool,
                     employee = employee,
@@ -102,7 +116,8 @@ data class Tool(
                     quantity = toolsEmployeesModel.quantity,
                     creationDate = toolsEmployeesModel.creationDate,
                     status = toolsEmployeesModel.status,
-                    updateDate = toolsEmployeesModel.updateDate
+                    updateDate = toolsEmployeesModel.updateDate,
+                    creationDateEntity = CreationDate()
                 )
             }
             return tool.copy(toolsWorks = works, toolsEmployees = employeeTools)

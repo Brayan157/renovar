@@ -14,5 +14,4 @@ data class WorkModel(
     val address: AddressModel,
     val employeesWorks: List<EmployeeWorkModel> = mutableListOf(),
     val toolsWorks: List<ToolsWorkModel> = mutableListOf()
-
 )

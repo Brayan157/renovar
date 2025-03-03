@@ -3,6 +3,7 @@ package com.brayan.renovar.database.entities
 import com.brayan.renovar.api.response.EmployeeResponse
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
+import com.fasterxml.jackson.annotation.JsonBackReference
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -57,6 +58,7 @@ data class Employee(
     @JsonManagedReference
     val function: Function,
     @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL])
+    @JsonBackReference
     val employeesWorks: List<EmployeeWork> = mutableListOf(),
     @Column(name = "registro_geral")
     val generalRegistration: String,
@@ -66,8 +68,10 @@ data class Employee(
     @Column(name = "status", nullable = false)
     val employeeStatus: EmployeeStatus,
     @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonBackReference
     val employeeEpis: List<EmployeeEPI> = mutableListOf(),
     @OneToMany(mappedBy = "employee", cascade = [CascadeType.ALL])
+    @JsonBackReference
     val toolsEmployee: List<ToolsEmployees> = mutableListOf()
 
 ){

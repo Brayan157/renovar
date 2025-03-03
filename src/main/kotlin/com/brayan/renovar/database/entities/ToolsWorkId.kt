@@ -11,6 +11,6 @@ class ToolsWorkId(
     val toolsId: UUID? = null,
     @Column(name = "work_id")
     val workId: UUID? = null,
-    @Column(name = "creation_date")
+    @Column(name = "creation_date_id")
     val creationDateId: UUID? = null
 ): Serializable

@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.ToolsWorkResponse
 import com.brayan.renovar.models.ToolsWorkModel
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.Column
@@ -33,7 +34,7 @@ data class ToolsWork(
 
     @ManyToOne
     @MapsId("creationDateId")
-    @JoinColumn(name = "id_creation_date")
+    @JoinColumn(name = "creation_date_id")
     val creationDateEntity: CreationDate,
 
     @Column(name = "motivo")
@@ -52,6 +53,16 @@ data class ToolsWork(
     fun toToolsWorkModel() = ToolsWorkModel(
         toolsId = tool.id!!,
         workId = work.id!!,
+        reason = reason,
+        entryDate = entryDate,
+        exitDate = exitDate,
+        creationDate = creationDate,
+        updateDate = updateDate,
+        creationDateId = creationDateEntity.id!!
+    )
+    fun toResponse() = ToolsWorkResponse(
+        tool = tool.toResponse(),
+        workResponse = work.toWorkResponse(),
         reason = reason,
         entryDate = entryDate,
         exitDate = exitDate,

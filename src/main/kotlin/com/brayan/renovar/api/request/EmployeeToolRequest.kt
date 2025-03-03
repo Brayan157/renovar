@@ -4,9 +4,10 @@ import com.brayan.renovar.enum.ToolEmployee
 import java.time.LocalDate
 import java.util.UUID
 
-data class AddToolsForEmployeeRequest (
+data class EmployeeToolRequest (
     val employeeId: UUID,
-    val tools: List<Map<UUID, Long>>,
+    val toolId: UUID,
     val startDate: LocalDate,
-    val status: ToolEmployee = ToolEmployee.ENTREGUE
+    val quantity: Int,
+    val status: ToolEmployee = ToolEmployee.ENTREGUE,
 )

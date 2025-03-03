@@ -11,7 +11,7 @@ class EmployeeWorkKey (
     val employeeId: UUID? = null,
     @Column(name = "obra_id")
     val workId: UUID? = null,
-    @Column(name = "creation_date")
+    @Column(name = "creation_date_id")
     val creationDateId: UUID? = null
 ): Serializable
 

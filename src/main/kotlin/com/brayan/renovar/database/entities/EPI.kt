@@ -2,6 +2,7 @@ package com.brayan.renovar.database.entities
 
 import com.brayan.renovar.api.response.EpiResponse
 import com.brayan.renovar.models.EPIModel
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -46,6 +47,7 @@ data class EPI(
     @UpdateTimestamp
     val updateDate: LocalDateTime? = null,
     @OneToMany(mappedBy = "epi", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JsonBackReference
     val employeeEpis: List<EmployeeEPI> = mutableListOf()
 ){
     fun toEPIModel() = EPIModel(

@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.entities
 
+import com.brayan.renovar.api.response.EmployeeWorkResponse
 import com.brayan.renovar.models.EmployeeWorkModel
 import jakarta.persistence.Column
 import jakarta.persistence.EmbeddedId
@@ -32,7 +33,7 @@ data class EmployeeWork(
 
     @ManyToOne
     @MapsId("creationDateId")
-    @JoinColumn(name = "id_creation_date")
+    @JoinColumn(name = "creation_date_id")
     val creationDateEntity: CreationDate,
 
     @Column(name = "data_inicio")
@@ -55,16 +56,11 @@ data class EmployeeWork(
         updateData = updateData,
         creationDateId = creationDateEntity.id!!
     )
-    companion object{
-        fun fromEmployeeWorkModel(employeeWorkModel: EmployeeWorkModel, employee: Employee, work: Work) = EmployeeWork(
-            id = EmployeeWorkKey(employeeId = employeeWorkModel.employeeId, workId = employeeWorkModel.workId),
-            employee = employee,
-            work = work,
-            startDate = employeeWorkModel.startDate,
-            endDate = employeeWorkModel.endDate,
-            creationDate = employeeWorkModel.creationDate,
-            updateData = employeeWorkModel.updateData,
-            creationDateEntity = CreationDate()
-        )
-    }
+    fun toEmployeeWorkResponse() = EmployeeWorkResponse(
+        workResponse = work.toWorkResponse(),
+        employeeResponse = employee.toEmployeeResponse(),
+        startDate = startDate!!,
+        endDate = endDate,
+        creationDate = creationDateEntity
+    )
 }

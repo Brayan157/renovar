@@ -1,11 +1,7 @@
 package com.brayan.renovar.services.interfaces
 
-import com.brayan.renovar.api.request.ADDEPISEmployee
-import com.brayan.renovar.api.request.AddToolsForEmployeeRequest
 import com.brayan.renovar.api.request.EmployeeUpdateRequest
 import com.brayan.renovar.api.request.FunctionRequest
-import com.brayan.renovar.api.request.RemoveToolEmployeeRequest
-import com.brayan.renovar.api.request.ReturnEpi
 import com.brayan.renovar.api.response.EmployeeResponse
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.EmployeeModel
@@ -27,10 +23,6 @@ interface EmployeeService {
     fun getEmployeesByName(name: String): List<EmployeeResponse>
 
     fun findAllIds(ids: List<UUID>): List<EmployeeResponse>
-    fun returnEPI(returnEpi: ReturnEpi): EmployeeModel
-    fun addToolsForEmployee(addToolsForEmployeeRequest: AddToolsForEmployeeRequest): EmployeeModel
-    fun removeToolsForEmployee(removeToolsFroEmployee: RemoveToolEmployeeRequest): EmployeeModel
-    fun addEPIToEmployee(addepisEmployee: ADDEPISEmployee): EmployeeModel
     fun getEmployeeByRegistration(registration: Int): EmployeeResponse
     fun getEmployeeByCPF(cpf: String): EmployeeResponse
     fun getEmployeeModel(id: UUID): EmployeeModel

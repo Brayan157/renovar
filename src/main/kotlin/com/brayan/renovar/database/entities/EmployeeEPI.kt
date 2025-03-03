@@ -3,6 +3,8 @@ package com.brayan.renovar.database.entities
 import com.brayan.renovar.api.response.EmployeeEpiResponse
 import com.brayan.renovar.enum.EPIStatus
 import com.brayan.renovar.models.EmployeeEPIModel
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import jakarta.persistence.Column
 import jakarta.persistence.EmbeddedId
 import jakarta.persistence.Entity
@@ -27,16 +29,19 @@ data class EmployeeEPI(
     @ManyToOne
     @MapsId("employeeId")
     @JoinColumn(name = "id_funcionario")
+    @JsonManagedReference
     val employee: Employee,
 
     @ManyToOne
     @MapsId("epiId")
     @JoinColumn(name = "id_epi")
+    @JsonManagedReference
     val epi: EPI,
 
     @ManyToOne
     @MapsId("creationDateId")
     @JoinColumn(name = "id_creation_date")
+    @JsonManagedReference
     val creationDateEntity: CreationDate,
 
     @Column(name = "quantidade")
