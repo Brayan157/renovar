@@ -1,6 +1,8 @@
 package com.brayan.renovar.services.implementations
 
 import com.brayan.renovar.api.request.ToolUpdateRequest
+import com.brayan.renovar.api.request.ToolUpdateStatusRequest
+import com.brayan.renovar.api.response.ToolResponse
 import com.brayan.renovar.database.repositories.interfaces.ToolRepository
 import com.brayan.renovar.enum.ToolStatus
 import com.brayan.renovar.models.ToolModel
@@ -13,33 +15,26 @@ class ToolServiceImpl(
     val toolRepository: ToolRepository
 ): ToolsService {
 
-    override fun save(toolModel: ToolModel): ToolModel {
-        return toolRepository.save(toolModel)
+    override fun save(toolModel: ToolModel): ToolResponse{
+        return toolRepository.save(toolModel).toResponse()
     }
 
-    override fun findAll(): List<ToolModel> {
-        return toolRepository.findAll()
+    override fun findAll(): List<ToolResponse> {
+        return toolRepository.findAll().map { it.toResponse() }
     }
 
-    override fun findById(id: UUID): ToolModel {
-       return toolRepository.findById(id)
+    override fun findById(id: UUID): ToolResponse {
+       return toolRepository.findById(id).toResponse()
     }
 
-    override fun findByName(name: String): List<ToolModel> {
-        return toolRepository.findByName(name)
+    override fun findByName(name: String): List<ToolResponse> {
+        return toolRepository.findByName(name).map { it.toResponse() }
     }
 
-    override fun findByStatus(status: ToolStatus): List<ToolModel> {
-        return toolRepository.findByStatus(status)
+    override fun findByStatus(status: ToolStatus): List<ToolResponse> {
+        return toolRepository.findByStatus(status).map { it.toResponse() }
     }
 
-    override fun updateStatus(toolUpdateRequest: ToolUpdateRequest): ToolModel {
-        val tool = toolRepository.findById(toolUpdateRequest.id)
-        val toolModel = tool.copy(
-            toolStatus = toolUpdateRequest.toolStatus?: tool.toolStatus
-        )
-        return toolRepository.save(toolModel)
-    }
 
     override fun deleteById(id: UUID): Boolean {
         val tool = toolRepository.findById(id)
@@ -49,8 +44,20 @@ class ToolServiceImpl(
         return if (toolRepository.save(toolModel) != null) true else false
     }
 
-    override fun findByStatusNot(deletada: ToolStatus): List<ToolModel> {
-        return toolRepository.findByStatusNot(deletada)
+    override fun findByStatusNot(deletada: ToolStatus): List<ToolResponse> {
+        return toolRepository.findByStatusNot(deletada).map { it.toResponse() }
+    }
+
+    override fun update(toolUpdade: ToolUpdateRequest): ToolResponse {
+        val toolModel = toolRepository.findById(toolUpdade.id)
+        val toolUpdate = toolModel.copy(
+              name = toolUpdade.name ?: toolModel.name,
+              purchaseDate = toolUpdade.purchaseDate ?: toolModel.purchaseDate,
+              unitValue = toolUpdade.unitValue ?: toolModel.unitValue,
+              toolStatus = toolUpdade.toolStatus ?: toolModel.toolStatus,
+              quantity = toolUpdade.quantity ?: toolModel.quantity
+        )
+        return toolRepository.save(toolUpdate).toResponse()
     }
 
 

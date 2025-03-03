@@ -12,5 +12,7 @@ data class WorkResponse(
     val companyProviding: String,
     val cnpj: String,
     val workStatus: WorkStatus,
-    val address: AddressModel
+    val address: AddressModel,
+    val creationDate: LocalDateTime? = null,
+    val updateDate: LocalDateTime? = null,
 )

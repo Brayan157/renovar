@@ -1,5 +1,6 @@
 package com.brayan.renovar.models
 
+import com.brayan.renovar.api.response.ToolResponse
 import com.brayan.renovar.enum.ToolStatus
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,4 +17,15 @@ data class ToolModel(
     val toolsWorks: List<ToolsWorkModel> = mutableListOf(),
     val toolsEmployees: List<ToolsEmployeesModel> = mutableListOf(),
     val quantity: Int
-)
+){
+    fun toResponse() = ToolResponse(
+        id = id!!,
+        name = name,
+        purchaseDate = purchaseDate,
+        unitValue = unitValue,
+        creationDate = creationDate,
+        toolStatus = toolStatus,
+        quantity = quantity,
+        updateDate = updateDate
+    )
+}

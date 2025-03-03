@@ -14,7 +14,7 @@ interface EmployeeService {
     fun getFunctionByName(name: String): List<FunctionModel>
     fun getFunctions(): List<FunctionModel>
     fun createEmployee(employeeModel: EmployeeModel): EmployeeResponse
-//    fun addEPIToEmployee(addepisEmployee: ADDEPISEmployee): EmployeeModel
+
     fun generateRegistration(): Int
     fun getEmployees(): List<EmployeeResponse>
     fun getEmployeeById(employeeId: UUID): EmployeeResponse

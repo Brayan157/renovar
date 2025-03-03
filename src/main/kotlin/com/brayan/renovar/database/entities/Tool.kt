@@ -68,7 +68,9 @@ data class Tool(
         purchaseDate = purchaseDate,
         toolStatus = toolStatus,
         unitValue = unitValue,
-        quantity = quantity
+        quantity = quantity,
+        creationDate = creationDate,
+        updateDate = updateDate
     )
 
     companion object{

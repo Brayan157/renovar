@@ -1,5 +1,6 @@
 package com.brayan.renovar.database.repositories.implementations
 
+import com.brayan.renovar.api.response.EpiResponse
 import com.brayan.renovar.database.entities.EPI
 import com.brayan.renovar.database.repositories.interfaces.EPIRepository
 import com.brayan.renovar.database.repositories.springData.EPISpringDataRepository
@@ -18,32 +19,32 @@ class EPIRepositoryImpl(
         return epiJpaRepository.findAllById(ids)
     }
 
-    override fun save(epi: EPIModel): EPIModel {
+    override fun save(epi: EPIModel): EpiResponse {
         val employees = if (epi.employeeEpis.isNotEmpty()) {
             employeeRepository.findAllById(epi.employeeEpis.map { it.employeeId })
         } else emptyList()
         val epiEntity = EPI.of(epi, employees)
-        return epiJpaRepository.save(epiEntity).toEPIModel()
+        return epiJpaRepository.save(epiEntity).toEpiResponse()
     }
 
     override fun findById(id: UUID): EPIModel {
         return epiJpaRepository.findById(id).map { it.toEPIModel() }.orElseThrow { Exception() }
     }
     //listar todos os EPIs que a expirationDate é menor que a data atual
-    override fun listExpiredEPIs(date:LocalDate): List<EPIModel> {
-        return epiJpaRepository.findByExpirationDateBefore(date).map { it.toEPIModel() }
+    override fun listExpiredEPIs(date:LocalDate): List<EpiResponse> {
+        return epiJpaRepository.findByExpirationDateBefore(date).map { it.toEpiResponse() }
     }
 
-    override fun findAll(): List<EPIModel> {
-        return epiJpaRepository.findAll().map { it.toEPIModel() }
+    override fun findAll(): List<EpiResponse> {
+        return epiJpaRepository.findAll().map { it.toEpiResponse() }
     }
 
-    override fun findByName(name: String): List<EPIModel> {
-        return epiJpaRepository.findByNameContainingIgnoreCase(name).map { it.toEPIModel() }
+    override fun findByName(name: String): List<EpiResponse> {
+        return epiJpaRepository.findByNameContainingIgnoreCase(name).map { it.toEpiResponse() }
     }
 
-    override fun listNotExpiredEPIs(currentDate: LocalDate?): List<EPIModel> {
-        return epiJpaRepository.findByExpirationDateAfter(currentDate).map { it.toEPIModel() }
+    override fun listNotExpiredEPIs(currentDate: LocalDate?): List<EpiResponse> {
+        return epiJpaRepository.findByExpirationDateAfter(currentDate).map { it.toEpiResponse() }
     }
 
 }

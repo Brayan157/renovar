@@ -2,6 +2,7 @@ package com.brayan.renovar.api.response
 
 import com.brayan.renovar.enum.EmployeeStatus
 import com.brayan.renovar.models.AddressModel
+import java.time.LocalDate
 import java.util.UUID
 
 data class EmployeeResponse(
@@ -9,7 +10,7 @@ data class EmployeeResponse(
     val name: String,
     val registration: Int,
     val cpf: String,
-    val birthDate: String,
+    val birthDate: LocalDate,
     val phones: String,
     val generalRegistration: String,
     val hourlyRate: Double,

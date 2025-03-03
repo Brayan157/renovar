@@ -13,5 +13,7 @@ data class ToolResponse(
     val purchaseDate: LocalDate,
     val unitValue: Double,
     val toolStatus: ToolStatus,
-    val quantity: Int
+    val quantity: Int,
+    val creationDate : LocalDateTime? = null,
+    val updateDate : LocalDateTime? = null,
 )

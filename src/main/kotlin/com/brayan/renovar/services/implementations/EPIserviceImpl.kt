@@ -1,6 +1,7 @@
 package com.brayan.renovar.services.implementations
 
 import com.brayan.renovar.api.request.EPIUpdateRequest
+import com.brayan.renovar.api.response.EpiResponse
 import com.brayan.renovar.database.repositories.interfaces.EPIRepository
 import com.brayan.renovar.models.EPIModel
 import com.brayan.renovar.services.interfaces.EPIService
@@ -12,11 +13,11 @@ import java.util.UUID
 class EPIserviceImpl(
     val epiRepository: EPIRepository,
 ):EPIService {
-    override fun save(epi: EPIModel): EPIModel {
+    override fun save(epi: EPIModel): EpiResponse {
         return epiRepository.save(epi)
     }
 
-    override fun update(epi: EPIUpdateRequest): EPIModel {
+    override fun update(epi: EPIUpdateRequest): EpiResponse {
         val epiModel = epiRepository.findById(epi.id)
         val epiUpdate = epiModel.copy(
             name = epi.name ?: epiModel.name,
@@ -28,27 +29,28 @@ class EPIserviceImpl(
             tag = epi.tag ?: epiModel.tag,
             lot = epi.lot ?: epiModel.lot
         )
+
         return epiRepository.save(epiUpdate)
     }
 
-    override fun listExpiredEPIs(): List<EPIModel> {
+    override fun listExpiredEPIs(): List<EpiResponse> {
         val currentDate = LocalDate.now()
         return epiRepository.listExpiredEPIs(currentDate)
     }
 
-    override fun listAllEPIs(): List<EPIModel> {
+    override fun listAllEPIs(): List<EpiResponse> {
         return epiRepository.findAll()
     }
 
-    override fun findById(id: UUID): EPIModel {
-        return epiRepository.findById(id)
+    override fun findById(id: UUID): EpiResponse {
+        return epiRepository.findById(id).toResponse()
     }
 
-    override fun findByName(name: String): List<EPIModel> {
+    override fun findByName(name: String): List<EpiResponse> {
         return epiRepository.findByName(name)
     }
 
-    override fun listNotExpiredEPIs(): List<EPIModel> {
+    override fun listNotExpiredEPIs(): List<EpiResponse> {
         val currentDate = LocalDate.now()
         return epiRepository.listNotExpiredEPIs(currentDate)
     }

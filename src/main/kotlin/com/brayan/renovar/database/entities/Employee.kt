@@ -98,7 +98,7 @@ data class Employee(
         name = name,
         registration = registration!!,
         cpf = cpf,
-        birthDate = birthDate.toString(),
+        birthDate = birthDate,
         phones = phones,
         generalRegistration = generalRegistration,
         hourlyRate = hourlyRate,
