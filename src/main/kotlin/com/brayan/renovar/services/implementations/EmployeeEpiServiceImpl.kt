@@ -47,10 +47,10 @@ class EmployeeEpiServiceImpl (
             reason = addEpiToEmployeeRequest.reason,
             creationDateId = creationRepository.saveCreation() ?: throw Exception("Erro ao salvar data de criação")
         )
-        return employeeEPIRepository.save(employeeEpiModel).toEmployeeEPIResponse()
+        return employeeEPIRepository.save(employeeEpiModel)
     }
     @Transactional
-    override fun returnEpiToEmployee(request: ReturnEpiToEmployeeRequest): EmployeeEPIModel {
+    override fun returnEpiToEmployee(request: ReturnEpiToEmployeeRequest): EmployeeEpiResponse {
         val key = EmployeeEPIId(
             employeeId = request.employeeId,
             epiId = request.epiId,
@@ -59,14 +59,14 @@ class EmployeeEpiServiceImpl (
 
         val employeeEpi = employeeEPIRepository.findById(key)
 
+        // Atualiza o EmployeeEPI com a data de devolução e o status
         val updatedEmployeeEpi = employeeEpi.copy(
             returnDate = request.returnDate,
             epiStatus = EPIStatus.DEVOLVIDO
         )
-        val update = employeeEPIRepository.save(updatedEmployeeEpi.toEmployeeEPIModel()).toEmployeeEPIModel()
-        return update
 
-
+        // Salva o EmployeeEPI atualizado e retorna a resposta
+        return employeeEPIRepository.save(updatedEmployeeEpi)
     }
 
     override fun getEmployeeEpi(): List<EmployeeEpiResponse> {
@@ -74,7 +74,17 @@ class EmployeeEpiServiceImpl (
     }
 
     override fun getEmployeeEpiId(id: EmployeeEPIId): EmployeeEpiResponse {
-        return employeeEPIRepository.findById(id).toEmployeeEPIResponse()
+        val employeeEpi = employeeEPIRepository.findById(id)
+        return EmployeeEpiResponse(
+            employee = employeeRepository.findEmployeeById(employeeEpi.employeeId),
+            epi = epiRepository.findById(employeeEpi.epiId).toResponse(),
+            quantity = employeeEpi.quantity,
+            deliveryDate = employeeEpi.deliveryDate,
+            returnDate = employeeEpi.returnDate,
+            epiStatus = employeeEpi.epiStatus,
+            reason = employeeEpi.reason,
+            creationDateId = employeeEpi.creationDateId
+        )
     }
 
     override fun getEmployeeEpiDelivered(): List<EmployeeEpiResponse> {
@@ -86,7 +96,9 @@ class EmployeeEpiServiceImpl (
     }
 
     override fun returnAllEpiToEmployee(returnAllEpi: ReturnAllEpi): List<EmployeeEpiResponse> {
-        val employeeEpiList = employeeEPIRepository.findAll().filter { it.employee.id == returnAllEpi.employeeModel.id }
+        val employee = employeeRepository.findEmployeeById(returnAllEpi.employeeId)
+
+        val employeeEpiList = employeeEPIRepository.findByEmployeeIdAndEPIStatus(returnAllEpi.employeeId).map { it.toEmployeeEPIModel() }
         if (employeeEpiList.isEmpty()) {
             throw Exception("Funcionário não possui EPIs")
         }
@@ -95,12 +107,13 @@ class EmployeeEpiServiceImpl (
                 it.copy(
                     returnDate = returnAllEpi.returnDate,
                     epiStatus = EPIStatus.DEVOLVIDO
-                ).toEmployeeEPIModel()
-            } else {
-                it.toEmployeeEPIModel()
+                )
+            }
+            else {
+                it
             }
         }
-        return employeeEpiUpdate.map { employeeEPIRepository.save(it).toEmployeeEPIResponse() }
+        return employeeEpiUpdate.map { employeeEPIRepository.save(it) }
     }
 
     override fun getEmployeeEpiByEmployeeId(employeeId: UUID): List<EmployeeEpiResponse> {
@@ -115,7 +128,5 @@ class EmployeeEpiServiceImpl (
         return employeeEPIRepository.findByEmployeeIdAndEPIStatus(employeeId).map { it.toEmployeeEPIResponse() }
     }
 
-    override fun getEmployeeEpiModel(): List<EmployeeEPI> {
-        return employeeEPIRepository.findAll()
-    }
+
 }

@@ -53,6 +53,4 @@ class EmployeeEpiController(
     //listar todos os epis que o status esteja entregue para um funcionário
     @GetMapping("/employeeDelivered/{employeeId}")
     fun getEmployeeEpiDeliveredByEmployeeId(@PathVariable employeeId: UUID) = employeeEpiService.getEmployeeEpiDeliveredByEmployeeId(employeeId)
-    @GetMapping("/model")
-    fun getEmployeeEpiModel() = employeeEpiService.getEmployeeEpiModel()
 }

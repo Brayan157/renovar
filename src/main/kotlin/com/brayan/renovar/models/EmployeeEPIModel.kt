@@ -1,5 +1,8 @@
 package com.brayan.renovar.models
 
+import com.brayan.renovar.api.response.EmployeeEpiResponse
+import com.brayan.renovar.api.response.EmployeeResponse
+import com.brayan.renovar.api.response.EpiResponse
 import com.brayan.renovar.enum.EPIStatus
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -16,4 +19,15 @@ data class EmployeeEPIModel(
     val creationDate: LocalDateTime? = null,
     val updateDate: LocalDateTime? = null,
     val creationDateId: UUID
-)
+){
+    fun toResponse(employeeResponse: EmployeeResponse, epiResponse: EpiResponse) = EmployeeEpiResponse(
+        employee = employeeResponse,
+        epi = epiResponse,
+        quantity = quantity,
+        deliveryDate = deliveryDate,
+        returnDate = returnDate,
+        epiStatus = epiStatus,
+        reason = reason,
+        creationDateId = creationDateId
+    )
+}

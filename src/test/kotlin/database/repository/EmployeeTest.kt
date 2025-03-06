@@ -64,7 +64,7 @@ class EmployeeTest {
             name = "João Silva",
             registration = 1,
             cpf = "12345678901",
-            birthDate = "1990-01-01",
+            birthDate = LocalDate.now(),
             phones = "11987654321",
             generalRegistration = "GR123",
             hourlyRate = 50.0,

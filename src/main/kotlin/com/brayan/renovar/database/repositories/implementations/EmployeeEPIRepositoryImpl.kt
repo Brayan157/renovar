@@ -21,7 +21,7 @@ class EmployeeEPIRepositoryImpl(
     private val epiSpringDataRepository: EPISpringDataRepository,
     private val creationJpaRepository: CreationSpringDataRepository
 ): EmployeeEPIRepository {
-    override fun save(employeeEpiModel: EmployeeEPIModel): EmployeeEPI {
+    override fun save(employeeEpiModel: EmployeeEPIModel): EmployeeEpiResponse {
         val employee = employeeSpringDataRepository.findById(employeeEpiModel.employeeId).get()
         val epi = epiSpringDataRepository.findById(employeeEpiModel.epiId).get()
         val creationJpaRepository = creationJpaRepository.findById(employeeEpiModel.creationDateId).get()
@@ -42,7 +42,7 @@ class EmployeeEPIRepositoryImpl(
             creationDate = employeeEpiModel.creationDate,
             updateDate = employeeEpiModel.updateDate
         )
-        return employeeEpiSpringDataRepository.save(employeeEPI)
+        return employeeEpiSpringDataRepository.save(employeeEPI).toEmployeeEPIResponse()
 
     }
 
@@ -50,8 +50,8 @@ class EmployeeEPIRepositoryImpl(
         return employeeEpiSpringDataRepository.findAll()
     }
 
-    override fun findById(id: EmployeeEPIId): EmployeeEPI {
-        return employeeEpiSpringDataRepository.findById(id).orElseThrow { RuntimeException("EPI não encontrado para o funcionário com ID: $id") }
+    override fun findById(id: EmployeeEPIId): EmployeeEPIModel {
+        return employeeEpiSpringDataRepository.findById(id).orElseThrow { RuntimeException("EPI não encontrado para o funcionário com ID: $id") }.toEmployeeEPIModel()
     }
 
     override fun findByStatus(entregue: EPIStatus): List<EmployeeEpiResponse> {

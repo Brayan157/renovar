@@ -11,7 +11,7 @@ import java.util.UUID
 
 interface EmployeeEpiService {
     fun addEpiToEmployee(addEpiToEmployeeRequest: AddEpiToEmployeeRequest): EmployeeEpiResponse
-    fun returnEpiToEmployee(returnEpiToEmployeeRequest: ReturnEpiToEmployeeRequest): EmployeeEPIModel
+    fun returnEpiToEmployee(returnEpiToEmployeeRequest: ReturnEpiToEmployeeRequest): EmployeeEpiResponse
     fun getEmployeeEpi(): List<EmployeeEpiResponse>
     fun getEmployeeEpiId(id: EmployeeEPIId): EmployeeEpiResponse
     fun getEmployeeEpiDelivered(): List<EmployeeEpiResponse>
@@ -20,6 +20,5 @@ interface EmployeeEpiService {
     fun getEmployeeEpiByEmployeeId(employeeId: UUID): List<EmployeeEpiResponse>
     fun getEmployeeEpiByEpiId(epiId: UUID): List<EmployeeEpiResponse>
     fun getEmployeeEpiDeliveredByEmployeeId(employeeId: UUID): List<EmployeeEpiResponse>
-    fun getEmployeeEpiModel(): List<EmployeeEPI>
 
 }

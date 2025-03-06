@@ -8,9 +8,9 @@ import com.brayan.renovar.models.EmployeeEPIModel
 import java.util.UUID
 
 interface EmployeeEPIRepository {
-    fun save(employeeEpiModel: EmployeeEPIModel): EmployeeEPI
+    fun save(employeeEpiModel: EmployeeEPIModel): EmployeeEpiResponse
     fun findAll(): List<EmployeeEPI>
-    fun findById(id: EmployeeEPIId): EmployeeEPI
+    fun findById(id: EmployeeEPIId): EmployeeEPIModel
     fun findByStatus(entregue: EPIStatus): List<EmployeeEpiResponse>
     fun findByEmployeeId(employeeId: UUID): List<EmployeeEPI>
     fun findByEpiId(epiId: UUID): List<EmployeeEPI>

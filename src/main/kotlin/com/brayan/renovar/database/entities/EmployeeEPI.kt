@@ -24,7 +24,7 @@ import java.time.LocalDateTime
 @Table(name = "tb_epis_funcionario")
 data class EmployeeEPI(
     @EmbeddedId
-    private val id: EmployeeEPIId = EmployeeEPIId(),
+    val id: EmployeeEPIId = EmployeeEPIId(),
 
     @ManyToOne
     @MapsId("employeeId")
