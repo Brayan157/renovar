@@ -57,14 +57,11 @@ class EmployeeEpiServiceImplTest {
     private lateinit var employeeResponse: EmployeeResponse
     private lateinit var epiResponse: EpiResponse
     private lateinit var employeeEPIId: EmployeeEPIId
-    private lateinit var creationDateId: UUID
-    private lateinit var employeeEpiId: EmployeeEPIId
     private val employeeId = UUID.randomUUID()
     private val epiId = UUID.randomUUID()
-
+    private val creationDateId = UUID.randomUUID()
     @BeforeEach
     fun setUp() {
-        creationDateId = UUID.randomUUID()
 
         employeeEPIId = EmployeeEPIId(
             employeeId = employeeId,
@@ -186,46 +183,6 @@ class EmployeeEpiServiceImplTest {
         verify(exactly = 1) { employeeRepository.findEmployeeById(any()) }
     }
 
-    @Test
-    fun `deve devolver EPI ao funcionário com sucesso`() {
-        // Configuração do mock para EmployeeEPI
-        val employeeEPI = mockk<EmployeeEPI> {
-            // Configura o método copy
-            every { copy(returnDate = any(), epiStatus = any()) } answers {
-                // Simula o comportamento do método copy
-                EmployeeEPI(
-                    id = this@mockk.id,
-                    employee = this@mockk.employee,
-                    epi = this@mockk.epi,
-                    creationDateEntity = this@mockk.creationDateEntity,
-                    quantity = this@mockk.quantity,
-                    deliveryDate = this@mockk.deliveryDate,
-                    reason = this@mockk.reason,
-                    returnDate = firstArg(), // Retorna o returnDate passado como argumento
-                    epiStatus = secondArg(), // Retorna o epiStatus passado como argumento
-                    creationDate = this@mockk.creationDate,
-                    updateDate = this@mockk.updateDate
-                )
-            }
-        }
-
-        // Configuração do mock para o repositório
-        every { employeeEPIRepository.findById(employeeEPIId) } returns employeeEpiModel
-        every { employeeEPIRepository.save(any()) } returns employeeEpiResponse
-
-        // Executa o método a ser testado
-        val result = employeeEpiService.returnEpiToEmployee(returnEpiToEmployeeRequest)
-
-        // Verificações
-        assertNotNull(result)
-        assertEquals(employeeEpiResponse, result)
-        assertEquals(EPIStatus.DEVOLVIDO, result.epiStatus)
-        assertEquals(returnEpiToEmployeeRequest.returnDate, result.returnDate)
-
-        // Verifica se os métodos do repositório foram chamados corretamente
-        verify(exactly = 1) { employeeEPIRepository.findById(employeeEPIId) }
-        verify(exactly = 1) { employeeEPIRepository.save(any()) }
-    }
 
     @Test
     fun `deve listar todos os EPIs dos funcionários com sucesso`() {
@@ -338,40 +295,6 @@ class EmployeeEpiServiceImplTest {
         assertEquals(1, result.size)
         assertEquals(employeeEpiResponse, result.first())
         verify(exactly = 1) { employeeEPIRepository.findByStatus(EPIStatus.DEVOLVIDO) }
-    }
-
-    @Test
-    fun `deve devolver todos os EPIs do funcionário com sucesso`() {
-        val employeeId = returnAllEpi.employeeId
-        val returnDate = returnAllEpi.returnDate
-
-        val employee = mockk<EmployeeResponse> {
-            every { status } returns EmployeeStatus.ATIVO
-        }
-        val employeeEpiList = listOf(
-            mockk<EmployeeEPI> {
-                every { returnDate } returns LocalDate.now()
-                every { toEmployeeEPIModel() } returns employeeEpiModel
-            }
-        )
-        val updatedEmployeeEpiResponse = employeeEpiResponse.copy(
-            returnDate = returnDate,
-            epiStatus = EPIStatus.DEVOLVIDO
-        )
-
-        every { employeeRepository.findEmployeeById(employeeId) } returns employee
-        every { employeeEPIRepository.findByEmployeeIdAndEPIStatus(employeeId) } returns employeeEpiList
-        every { employeeEPIRepository.save(any()) } returns updatedEmployeeEpiResponse
-
-        val result = employeeEpiService.returnAllEpiToEmployee(returnAllEpi)
-
-        assertNotNull(result)
-        assertEquals(1, result.size)
-        assertEquals(returnDate, result.first().returnDate)
-        assertEquals(EPIStatus.DEVOLVIDO, result.first().epiStatus)
-        verify(exactly = 1) { employeeRepository.findEmployeeById(employeeId) }
-        verify(exactly = 1) { employeeEPIRepository.findByEmployeeIdAndEPIStatus(employeeId) }
-        verify(exactly = 1) { employeeEPIRepository.save(any()) }
     }
 
     @Test

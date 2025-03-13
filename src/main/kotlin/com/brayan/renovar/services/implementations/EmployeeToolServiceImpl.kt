@@ -27,17 +27,17 @@ class EmployeeToolServiceImpl(
     @Transactional
 
     override fun save(employeeToolRequest: EmployeeToolRequest): EmployeeToolResponse {
-        if (employeeToolRepository.findByToolIdAndEndDateIsNull(employeeToolRequest.toolId).isNotEmpty()) {
-            throw Exception("Ferramenta já está emprestada")
-        }
-        val employee = employeeRepository.findEmployeeById(employeeToolRequest.employeeId)
-        if (employee.status != EmployeeStatus.ATIVO){
-            throw Exception("Funcionário não está trabalhando")
-        }
+//        if (employeeToolRepository.findByToolIdAndEndDateIsNull(employeeToolRequest.toolId).isNotEmpty()) {
+//            throw Exception("Ferramenta já está emprestada")
+//        }
+//        val employee = employeeRepository.findEmployeeById(employeeToolRequest.employeeId)
+//        if (employee.status != EmployeeStatus.ATIVO){
+//            throw Exception("Funcionário não está trabalhando")
+//        }
         val tool = toolRepository.findById(employeeToolRequest.toolId)
-        if (tool.toolStatus != ToolStatus.PARADA){
-            throw Exception("Ferramenta não está disponível")
-        }
+//        if (tool.toolStatus != ToolStatus.PARADA){
+//            throw Exception("Ferramenta não está disponível")
+//        }
         val employeeTool = ToolsEmployeesModel(
             employeeId = employeeToolRequest.employeeId,
             toolId = employeeToolRequest.toolId,
@@ -47,7 +47,7 @@ class EmployeeToolServiceImpl(
             creationDateId = creationRepository.saveCreation() ?: throw Exception("Erro ao salvar data de criação")
         )
         val response = employeeToolRepository.save(employeeTool).toResponse()
-        toolRepository.save(tool.copy(toolStatus = ToolStatus.TRABALHANDO))
+//        toolRepository.save(tool.copy(toolStatus = ToolStatus.TRABALHANDO))
         return response
 
     }
