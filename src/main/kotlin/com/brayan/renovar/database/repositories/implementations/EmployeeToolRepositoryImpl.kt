@@ -24,7 +24,7 @@ class EmployeeToolRepositoryImpl(
         return employeeToolJpaRepository.findByToolIdAndEndDateIsNull(toolId).map { it.toToolsEmployeesModel()}
     }
 
-    override fun save(employeeTool: ToolsEmployeesModel): ToolsEmployees {
+    override fun save(employeeTool: ToolsEmployeesModel): ToolsEmployeesModel {
         val toolsEmployees = ToolsEmployees(
             id = ToolsEmployeesKey(
                 employeeId = employeeTool.employeeId,
@@ -39,25 +39,25 @@ class EmployeeToolRepositoryImpl(
             status = employeeTool.status,
             creationDateEntity = creationDataRepository.findById(employeeTool.creationDateId).get()
         )
-        return employeeToolJpaRepository.save(toolsEmployees)
+        return employeeToolJpaRepository.save(toolsEmployees).toToolsEmployeesModel()
     }
 
-    override fun findById(id: ToolsEmployeesKey): ToolsEmployees {
-        return employeeToolJpaRepository.findById(id).get()
+    override fun findById(id: ToolsEmployeesKey): ToolsEmployeesModel {
+        return employeeToolJpaRepository.findById(id).get().toToolsEmployeesModel()
     }
 
-    override fun findAll(): List<ToolsEmployees> {
-        return employeeToolJpaRepository.findAll()
+    override fun findAll(): List<ToolsEmployeesModel> {
+        return employeeToolJpaRepository.findAll().map { it.toToolsEmployeesModel() }
     }
 
-    override fun findByEmployeeId(employeeId: UUID): List<ToolsEmployees> {
+    override fun findByEmployeeId(employeeId: UUID): List<ToolsEmployeesModel> {
         val employees = employeeRepository.findById(employeeId)
-        return employeeToolJpaRepository.findByEmployee(employees.get())
+        return employeeToolJpaRepository.findByEmployee(employees.get()).map { it.toToolsEmployeesModel() }
     }
 
-    override fun findByEmployeeIdAndStatus(employeeId: UUID, status: ToolEmployee): List<ToolsEmployees> {
+    override fun findByEmployeeIdAndStatus(employeeId: UUID, status: ToolEmployee): List<ToolsEmployeesModel> {
         val employees = employeeRepository.findById(employeeId)
-        return employeeToolJpaRepository.findByEmployeeAndStatus(employees.get(), status)
+        return employeeToolJpaRepository.findByEmployeeAndStatus(employees.get(), status).map { it.toToolsEmployeesModel() }
     }
 
 }

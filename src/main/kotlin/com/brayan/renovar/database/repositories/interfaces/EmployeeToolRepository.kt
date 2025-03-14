@@ -9,10 +9,10 @@ import java.util.UUID
 
 interface EmployeeToolRepository {
     fun findByToolIdAndEndDateIsNull(toolId: UUID): List<ToolsEmployeesModel>
-    fun save(employeeTool: ToolsEmployeesModel): ToolsEmployees
-    fun findById(id: ToolsEmployeesKey): ToolsEmployees
-    fun findAll(): List<ToolsEmployees>
-    fun findByEmployeeId(employeeId: UUID): List<ToolsEmployees>
-    fun findByEmployeeIdAndStatus(employeeId: UUID, status: ToolEmployee): List<ToolsEmployees>
+    fun save(employeeTool: ToolsEmployeesModel): ToolsEmployeesModel
+    fun findById(id: ToolsEmployeesKey): ToolsEmployeesModel
+    fun findAll(): List<ToolsEmployeesModel>
+    fun findByEmployeeId(employeeId: UUID): List<ToolsEmployeesModel>
+    fun findByEmployeeIdAndStatus(employeeId: UUID, status: ToolEmployee): List<ToolsEmployeesModel>
 
 }

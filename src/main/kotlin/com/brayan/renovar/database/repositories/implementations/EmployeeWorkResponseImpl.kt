@@ -18,7 +18,7 @@ class EmployeeWorkResponseImpl(
     private val creationJpaRepository: CreationSpringDataRepository,
     private val workJpaRepository: WorkSpringDataRepository
 ): EmployeeWorkRespository {
-    override fun save(employeeWork: EmployeeWorkModel): EmployeeWork{
+    override fun save(employeeWork: EmployeeWorkModel): EmployeeWorkModel{
         val employeeWorkSave = EmployeeWork(
             id = EmployeeWorkKey(
                 employeeId = employeeWork.employeeId,
@@ -32,34 +32,34 @@ class EmployeeWorkResponseImpl(
             creationDate = employeeWork.creationDate
         )
 
-        return employeeWorkJpaRepository.save(employeeWorkSave)
+        return employeeWorkJpaRepository.save(employeeWorkSave).toEmployeeWorkModel()
     }
 
 
-    override fun findById(id: EmployeeWorkKey): EmployeeWork {
-        return employeeWorkJpaRepository.findById(id).get()
+    override fun findById(id: EmployeeWorkKey): EmployeeWorkModel {
+        return employeeWorkJpaRepository.findById(id).get().toEmployeeWorkModel()
     }
 
-    override fun findAll(): List<EmployeeWork> {
-        return employeeWorkJpaRepository.findAll()
+    override fun findAll(): List<EmployeeWorkModel> {
+        return employeeWorkJpaRepository.findAll().map { it.toEmployeeWorkModel() }
     }
 
-    override fun findByEndDateIsNull(): List<EmployeeWork> {
-        return employeeWorkJpaRepository.findByEndDateIsNull()
+    override fun findByEndDateIsNull(): List<EmployeeWorkModel> {
+        return employeeWorkJpaRepository.findByEndDateIsNull().map { it.toEmployeeWorkModel() }
     }
 
-    override fun findByEndDateIsNotNull(): List<EmployeeWork> {
-        return employeeWorkJpaRepository.findByEndDateIsNotNull()
+    override fun findByEndDateIsNotNull(): List<EmployeeWorkModel> {
+        return employeeWorkJpaRepository.findByEndDateIsNotNull().map { it.toEmployeeWorkModel() }
     }
 
 
-    override fun findByEmployeeIdAndEndDateIsNull(employeeId: UUID): List<EmployeeWork> {
+    override fun findByEmployeeIdAndEndDateIsNull(employeeId: UUID): List<EmployeeWorkModel> {
         val employee = employeeSpringDataRepository.findById(employeeId).get()
-        return employeeWorkJpaRepository.findByEmployeeAndEndDateIsNull(employee)
+        return employeeWorkJpaRepository.findByEmployeeAndEndDateIsNull(employee).map { it.toEmployeeWorkModel() }
     }
 
-    override fun findByWorkId(workId: UUID): List<EmployeeWork> {
+    override fun findByWorkId(workId: UUID): List<EmployeeWorkModel> {
         val work = workJpaRepository.findById(workId).get()
-        return employeeWorkJpaRepository.findByWork(work)
+        return employeeWorkJpaRepository.findByWork(work).map { it.toEmployeeWorkModel() }
     }
 }

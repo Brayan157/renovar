@@ -43,40 +43,68 @@ class EmployeeWorkServiceImpl(
             creationDateId = creationRepository.saveCreation() ?: throw Exception("Erro ao salvar data de criação")
         )
 
-        return employeeWorkRepository.save(employeeWork).toEmployeeWorkResponse()
+        return employeeWorkRepository.save(employeeWork).toEmployeeWorkResponse(work.toResponse(), employee, creationRepository.findCreationById(employeeWork.creationDateId))
     }
 
     override fun updateEmployeeWork(returnEmployeeToWork: ReturnEmployeeToWork): EmployeeWorkResponse {
         val employeeWork = employeeWorkRepository.findById(returnEmployeeToWork.id)
         val employeeWorkUpdate = employeeWork.copy(
             endDate = returnEmployeeToWork.returnDate
-        ).toEmployeeWorkModel()
-        return employeeWorkRepository.save(employeeWorkUpdate).toEmployeeWorkResponse()
+        )
+        return employeeWorkRepository.save(employeeWorkUpdate).toEmployeeWorkResponse(
+            work = workRepository.findById(employeeWork.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(employeeWork.employeeId),
+            creationDate = creationRepository.findCreationById(employeeWork.creationDateId)
+        )
     }
 
     override fun getEmployeeWork(): List<EmployeeWorkResponse> {
-        return employeeWorkRepository.findAll().map { it.toEmployeeWorkResponse() }
+        return employeeWorkRepository.findAll().map { it.toEmployeeWorkResponse(
+            work = workRepository.findById(it.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId),
+            creationDate = creationRepository.findCreationById(it.creationDateId)
+        ) }
     }
 
     override fun getEmployeeWorkById(id: EmployeeWorkKey): EmployeeWorkResponse {
-        return employeeWorkRepository.findById(id).toEmployeeWorkResponse()
+        return employeeWorkRepository.findById(id).toEmployeeWorkResponse(
+            work = workRepository.findById(id.workId!!).toResponse(),
+            employee = employeeRepository.findEmployeeById(id.employeeId!!),
+            creationDate = creationRepository.findCreationById(id.creationDateId!!)
+        )
     }
 
     override fun getEmployeeWorkWorking(): List<EmployeeWorkResponse> {
-        return employeeWorkRepository.findByEndDateIsNull().map { it.toEmployeeWorkResponse() }
+        return employeeWorkRepository.findByEndDateIsNull().map { it.toEmployeeWorkResponse(
+            work = workRepository.findById(it.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId),
+            creationDate = creationRepository.findCreationById(it.creationDateId)
+        ) }
     }
 
     override fun getEmployeeWorkNotWorking(): List<EmployeeWorkResponse> {
-        return employeeWorkRepository.findByEndDateIsNotNull().map { it.toEmployeeWorkResponse() }
+        return employeeWorkRepository.findByEndDateIsNotNull().map { it.toEmployeeWorkResponse(
+            work = workRepository.findById(it.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId),
+            creationDate = creationRepository.findCreationById(it.creationDateId)
+        ) }
     }
 
     override fun getEmployeeWorkByEmployeeId(employeeId: UUID): List<EmployeeWorkResponse> {
         // listar obra que o funcionário está trabalhando e que o endDate é nulo
-        return employeeWorkRepository.findByEmployeeIdAndEndDateIsNull(employeeId).map { it.toEmployeeWorkResponse() }
+        return employeeWorkRepository.findByEmployeeIdAndEndDateIsNull(employeeId).map { it.toEmployeeWorkResponse(
+            work = workRepository.findById(it.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId),
+            creationDate = creationRepository.findCreationById(it.creationDateId)
+        ) }
     }
 
     override fun getEmployeeWorkByWorkId(workId: UUID): List<EmployeeWorkResponse> {
-        return employeeWorkRepository.findByWorkId(workId).map { it.toEmployeeWorkResponse() }
+        return employeeWorkRepository.findByWorkId(workId).map { it.toEmployeeWorkResponse(
+            work = workRepository.findById(it.workId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId),
+            creationDate = creationRepository.findCreationById(it.creationDateId)
+        ) }
     }
 
 }

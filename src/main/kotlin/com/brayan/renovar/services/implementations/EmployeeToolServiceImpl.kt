@@ -27,17 +27,17 @@ class EmployeeToolServiceImpl(
     @Transactional
 
     override fun save(employeeToolRequest: EmployeeToolRequest): EmployeeToolResponse {
-//        if (employeeToolRepository.findByToolIdAndEndDateIsNull(employeeToolRequest.toolId).isNotEmpty()) {
-//            throw Exception("Ferramenta já está emprestada")
-//        }
-//        val employee = employeeRepository.findEmployeeById(employeeToolRequest.employeeId)
-//        if (employee.status != EmployeeStatus.ATIVO){
-//            throw Exception("Funcionário não está trabalhando")
-//        }
+        if (employeeToolRepository.findByToolIdAndEndDateIsNull(employeeToolRequest.toolId).isNotEmpty()) {
+            throw Exception("Ferramenta já está emprestada")
+        }
+        val employee = employeeRepository.findEmployeeById(employeeToolRequest.employeeId)
+        if (employee.status != EmployeeStatus.ATIVO){
+            throw Exception("Funcionário não está trabalhando")
+        }
         val tool = toolRepository.findById(employeeToolRequest.toolId)
-//        if (tool.toolStatus != ToolStatus.PARADA){
-//            throw Exception("Ferramenta não está disponível")
-//        }
+        if (tool.toolStatus != ToolStatus.PARADA){
+            throw Exception("Ferramenta não está disponível")
+        }
         val employeeTool = ToolsEmployeesModel(
             employeeId = employeeToolRequest.employeeId,
             toolId = employeeToolRequest.toolId,
@@ -46,8 +46,11 @@ class EmployeeToolServiceImpl(
             status = employeeToolRequest.status,
             creationDateId = creationRepository.saveCreation() ?: throw Exception("Erro ao salvar data de criação")
         )
-        val response = employeeToolRepository.save(employeeTool).toResponse()
-//        toolRepository.save(tool.copy(toolStatus = ToolStatus.TRABALHANDO))
+        val response = employeeToolRepository.save(employeeTool).toResponse(
+            tool = tool.toResponse(),
+            employee = employee
+        )
+        toolRepository.save(tool.copy(toolStatus = ToolStatus.TRABALHANDO))
         return response
 
     }
@@ -63,24 +66,39 @@ class EmployeeToolServiceImpl(
         val employeeToolUpdate = employeeTool.copy(
             endDate = employeeToolUpdateRequest.endDate,
             status = employeeToolUpdateRequest.status
-        ).toToolsEmployeesModel()
-        return employeeToolRepository.save(employeeToolUpdate).toResponse()
+        )
+        return employeeToolRepository.save(employeeToolUpdate).toResponse(
+            tool = tool.toResponse(),
+            employee = employeeRepository.findEmployeeById(employeeToolUpdate.employeeId)
+        )
     }
 
     override fun listAll(): List<EmployeeToolResponse> {
-        return employeeToolRepository.findAll().map { it.toResponse() }
+        return employeeToolRepository.findAll().map { it.toResponse(
+            tool = toolRepository.findById(it.toolId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId)
+        ) }
     }
 
     override fun listByEmployeeId(employeeId: UUID): List<EmployeeToolResponse> {
-        return employeeToolRepository.findByEmployeeId(employeeId).map { it.toResponse() }
+        return employeeToolRepository.findByEmployeeId(employeeId).map { it.toResponse(
+            tool = toolRepository.findById(it.toolId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId)
+        ) }
     }
 
     override fun listByEmployeeIdAndStatusLoaned(employeeId: UUID): List<EmployeeToolResponse> {
-        return employeeToolRepository.findByEmployeeIdAndStatus(employeeId, ToolEmployee.ENTREGUE).map { it.toResponse() }
+        return employeeToolRepository.findByEmployeeIdAndStatus(employeeId, ToolEmployee.ENTREGUE).map { it.toResponse(
+            tool = toolRepository.findById(it.toolId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId)
+        ) }
     }
 
     override fun listByEmployeeIdAndStatusReturned(employeeId: UUID): List<EmployeeToolResponse> {
-        return employeeToolRepository.findByEmployeeIdAndStatus(employeeId, ToolEmployee.DEVOLVIDO).map { it.toResponse() }
+        return employeeToolRepository.findByEmployeeIdAndStatus(employeeId, ToolEmployee.DEVOLVIDO).map { it.toResponse(
+            tool = toolRepository.findById(it.toolId).toResponse(),
+            employee = employeeRepository.findEmployeeById(it.employeeId)
+        ) }
     }
 
 }
