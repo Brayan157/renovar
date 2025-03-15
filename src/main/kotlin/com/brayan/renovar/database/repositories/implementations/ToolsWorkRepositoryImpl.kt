@@ -22,7 +22,7 @@ class ToolsWorkRepositoryImpl(
         return toolsWorkSpringDataRepository.findByToolIdAndExitDateIsNull(toolId).map { it.toToolsWorkModel() }
     }
 
-    override fun save(toolsWork: ToolsWorkModel): ToolsWork {
+    override fun save(toolsWork: ToolsWorkModel): ToolsWorkModel {
         val toolsWorkSave = ToolsWork(
             id = ToolsWorkId(
                 toolsId = toolsWork.toolsId,
@@ -35,11 +35,30 @@ class ToolsWorkRepositoryImpl(
             entryDate = toolsWork.entryDate,
             creationDateEntity = creationDataJpaRepository.findById(toolsWork.creationDateId).orElseThrow { Exception("Data de criação não encontrada") }
         )
-        return toolsWorkSpringDataRepository.save(toolsWorkSave)
+        return toolsWorkSpringDataRepository.save(toolsWorkSave).toToolsWorkModel()
     }
 
-    override fun findById(id: ToolsWorkId): ToolsWork {
-        return toolsWorkSpringDataRepository.findById(id).orElseThrow { Exception("Ferramenta não encontrada") }
+    override fun findById(id: ToolsWorkId): ToolsWorkModel {
+        return toolsWorkSpringDataRepository.findById(id).orElseThrow().toToolsWorkModel()
+    }
+
+    override fun findAll(): List<ToolsWorkModel> {
+        return toolsWorkSpringDataRepository.findAll().map { it.toToolsWorkModel() }
+    }
+
+    override fun findByWorkId(workId: UUID): List<ToolsWorkModel> {
+        val work = workJpaRepository.findById(workId).orElseThrow { Exception("Obra não encontrada") }
+        return toolsWorkSpringDataRepository.findByWork(work).map { it.toToolsWorkModel() }
+    }
+
+    override fun findByWorkIdAndExitDateIsNull(workId: UUID): List<ToolsWorkModel> {
+        val work = workJpaRepository.findById(workId).orElseThrow { Exception("Obra não encontrada") }
+        return toolsWorkSpringDataRepository.findByWorkAndExitDateIsNull(work).map { it.toToolsWorkModel() }
+    }
+
+    override fun findByWorkIdAndExitDateIsNotNull(workId: UUID): List<ToolsWorkModel> {
+        val work = workJpaRepository.findById(workId).orElseThrow { Exception("Obra não encontrada") }
+        return toolsWorkSpringDataRepository.findByWorkAndExitDateIsNotNull(work).map { it.toToolsWorkModel() }
     }
 
 
