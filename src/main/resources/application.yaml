@@ -25,6 +25,12 @@ api:
   security:
     token:
       secret  : ${JWT_SECRET:my-secret-key}
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
 #logging:
 #  level:
 #    root: DEBUG
